@@ -1,0 +1,128 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+.sidebar {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: -250px;
+    background: #333;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 2px 0 15px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+}
+
+.menu-content {
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.menu-content a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 4px;
+    transition: background 0.3s ease;
+}
+
+.menu-content a:hover {
+    background: #575757;
+}
+
+.toggle-btn {
+    position: absolute;
+    top: 20px;
+    right: -50px;
+    background: #333;
+    color: white;
+    border: none;
+    padding: 12px 16px;
+    font-size: 15px;
+    cursor: pointer;
+    border-radius: 0 5px 5px 0;
+    transition: all 0.3s ease;
+    z-index: 1001;
+}
+
+.toggle-btn:hover {
+    background: #575757;
+    right: -45px;
+}
+
+/* Состояние открытого меню */
+.sidebar.open {
+    left: 0;
+}
+
+.sidebar.open .menu-content {
+    opacity: 1;
+}
+
+.sidebar.open .toggle-btn {
+    right: 10px;
+    transform: rotate(90deg);
+}
+
+.main-content {
+    transition: margin-left 0.3s ease;
+    padding: 20px;
+}
+.elements-manage{
+    margin-top:20%;
+}
+@media (max-width: 480px) {
+    .device-card {
+      padding: 15px;
+    }
+    
+    .filters {
+      flex-direction: column;
+    }
+  }
+  .device-card {
+      position: fixed;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      max-width: 400px;
+      padding: 20px;
+      background: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      z-index: 1000;
+  }
+  
+  .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+  }
+
+  .card-body {
+      margin-top: 10px;
+  }
+
+  .card-body p {
+      margin: 10px 0;
+  }
+
+  .card-header button {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+  }
+  
+  .card-header button:hover {
+      background: #c0392b;
+  }

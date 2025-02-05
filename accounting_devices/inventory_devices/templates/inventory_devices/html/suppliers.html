@@ -1,0 +1,397 @@
+{% extends "inventory_devices/html/base.html" %}
+{% load static %}
+{% block title %}Поставщики{% endblock %}
+{% block content %}
+<style>
+.device-table {
+  margin: 5% auto;
+  width: 80%;
+  border-collapse: collapse;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.device-table th {
+  background: #2c3e50;
+  color: white;
+  padding: 15px;
+  text-align: left;
+}
+
+.device-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+.device-table tr:nth-child(even) {
+  background: #f8f9fa;
+}
+
+.device-table tr:hover {
+  background: #e9ecef;
+  cursor: pointer;
+}
+
+.status-active { color: #28a745; }
+-status-repair { color: #ffc107; }
+.status-archived { color: #dc3545; }
+
+.modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            text-align:center;
+            background: white;
+            margin: 15% auto;
+            padding: 20px;
+            width: 20%;
+            max-width: 500px;
+            position: relative;
+            z-index: 1001;
+        }
+
+        .close {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        /* Остальные стили */
+        .device-table {
+            margin: 5% auto;
+            width: 80%;
+            border-collapse: collapse;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .device-table th {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .device-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .device-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .device-table tr:hover {
+            background: #e9ecef;
+            cursor: pointer;
+        }
+
+        .status-active { color: #28a745; }
+        .status-repair { color: #ffc107; } /* Исправлена опечатка */
+        .status-archived { color: #dc3545; }
+
+        @media (max-width: 168px) {
+            .device-table {
+                display: block;
+                overflow-x: auto;
+            }
+            /* Можете добавить мобильные стили для модалки здесь */
+        }
+    /* Добавьте в секцию стилей */
+.supplier-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-input:focus {
+  outline: 2px solid #4CAF50;
+  border-color: transparent;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+
+.submit-btn {
+  background: #4CAF50;
+  color: white;
+  padding: 8px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cancel-btn {
+  background: #dc3545;
+  color: white;
+  padding: 8px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+    </style>
+<h1 style="color: #333; font-size: 36px; text-align: center;">Поставщики</h1>
+<button
+  type="button"
+  style="margin: 0 10%; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;"
+  onclick="openModal()">
+  Добавить поставщика
+</button>
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2 style="margin-bottom: 20px;">Добавить поставщика</h2>
+    <form method="POST" class="supplier-form">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="supp_name">Название компании:</label>
+        <input type="text"
+               id="supp_name"
+               name="supp_name"
+               required
+               class="form-input">
+      </div>
+      <div class="form-group">
+        <label for="supp_phone">Телефон:</label>
+        <input type="tel"
+               id="supp_phone"
+               name="supp_phone"
+               placeholder="Формат: 12-34-56"
+               required
+               class="form-input">
+      </div>
+      <div class="form-group">
+        <label for="supp_address">Адрес:</label>
+        <textarea id="supp_address"
+                  name="supp_address"
+                  rows="3"
+                  required
+                  class="form-input"></textarea>
+      </div>
+      <div class="form-actions">
+        <button type="button"
+                class="cancel-btn"
+                onclick="closeModal()">Отмена</button>
+        <button type="submit"
+                class="submit-btn">Сохранить</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div id="edit-modal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeEditModal()">&times;</span>
+    <h2 style="margin-bottom: 20px;">Редактировать поставщика</h2>
+    <form id="edit-supplier-form" method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="edit_mode" value="1">
+      <input type="hidden" id="edit-supplier-id" name="supplier_id">
+      <div class="form-group">
+        <label for="edit-supp-name">Название компании:</label>
+        <input type="text" id="edit-supp-name" name="supp_name" required class="form-input">
+      </div>
+      <div class="form-group">
+        <label for="edit-supp-phone">Телефон:</label>
+        <input type="tel" id="edit-supp-phone" name="supp_phone" required class="form-input">
+      </div>
+      <div class="form-group">
+        <label for="edit-supp-address">Адрес:</label>
+        <textarea id="edit-supp-address" name="supp_address" rows="3" required class="form-input"></textarea>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="cancel-btn" onclick="closeEditModal()">Отмена</button>
+        <button type="submit" class="submit-btn">Сохранить</button>
+      </div>
+    </form>
+  </div>
+</div>
+<table class="device-table">
+  <thead>
+    <tr>
+      <th>Номер поставщика</th>
+      <th>Имя поставщика</th>
+      <th>Телефон</th>
+      <th>Адрес поставщика</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for supplier in suppliers %}
+    <tr>
+      <td>{{ supplier.id }}</td>
+      <td>{{ supplier.supp_name }}</td>
+      <td>{{ supplier.supp_phone }}</td>
+      <td>{{ supplier.supp_address }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<div class="device-card" id="device-card" style="display: none;">
+    <div class="card-header">
+        <h2>Информация о поставщике</h2>
+        <button onclick="closeCard()">x</button>
+    </div>
+    <div class="card-body">
+        <p><strong>Номер поставщика</strong> <span id="card-supplier-id"></span></p>
+        <p><strong>Имя поставщика</strong> <span id="card-supplier-name"></span></p>
+        <p><strong>Телефон</strong> <span id="card-supplier-phone"></span></p>
+        <p><strong>Адрес поставщика</strong> <span id="card-supplier-address"></span></p>
+        <button onclick="openEditModalFromCard()" style="background: #007bff;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;">Редактировать</button>
+        <button onclick="deleteSupplier()" class="cancel-btn">Удалить</button>
+
+    </div>
+</div>
+<script>
+    window.onload = function () {
+        {% if success %}
+        alert("Поставщик успешно добавлен!");
+        {% endif %}
+    };
+
+    function openModal() {
+        closeCard();
+        document.getElementById("modal").style.display = "block";
+    }
+
+    function closeModal() {
+        document.getElementById("modal").style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById("modal");
+        if (event.target === modal) {
+            closeModal();
+        }
+    }
+
+    function openCard(id, type, model, status) {
+        closeModal()
+        document.getElementById('card-id').innerText = id;
+        document.getElementById('card-type').innerText = type;
+        document.getElementById('card-model').innerText = model;
+        document.getElementById('card-status').innerText = status;
+        document.getElementById('device-card').style.display = 'block';
+    }
+
+    function closeCard() {
+        document.getElementById('device-card').style.display = 'none';
+    }
+
+    document.querySelectorAll('.device-table tr').forEach(function(row) {
+    row.addEventListener('click', function() {
+        const id = row.cells[0].innerText;
+        const name = row.cells[1].innerText;
+        const phone = row.cells[2].innerText;
+        const address = row.cells[3].innerText;
+
+        // Заполняем карточку
+        document.getElementById('card-supplier-id').innerText = id;
+        document.getElementById('card-supplier-name').innerText = name;
+        document.getElementById('card-supplier-phone').innerText = phone;
+        document.getElementById('card-supplier-address').innerText = address;
+
+        document.getElementById('device-card').style.display = 'block';
+    });
+});
+    function openEditModal(id, name, phone, address) {
+    document.getElementById("edit-supplier-id").value = id;
+    document.getElementById("edit-supp-name").value = name;
+    document.getElementById("edit-supp-phone").value = phone;
+    document.getElementById("edit-supp-address").value = address;
+
+    document.getElementById("edit-modal").style.display = "block";
+    }
+
+    function closeEditModal() {
+        document.getElementById("edit-modal").style.display = "none";
+    }
+
+    // Закрытие модального окна при клике вне его
+    window.onclick = function(event) {
+        const modal = document.getElementById("edit-modal");
+        if (event.target === modal) {
+            closeEditModal();
+        }
+    }
+    document.getElementById('edit-supplier-form').onsubmit = async function (event) {
+    event.preventDefault();
+
+    const supplierId = document.getElementById("edit-supplier-id").value;
+    const suppName = document.getElementById("edit-supp-name").value;
+    const suppPhone = document.getElementById("edit-supp-phone").value;
+    const suppAddress = document.getElementById("edit-supp-address").value;
+
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+};
+function openEditModalFromCard() {
+    const id = document.getElementById('card-supplier-id').innerText;
+    const name = document.getElementById('card-supplier-name').innerText;
+    const phone = document.getElementById('card-supplier-phone').innerText;
+    const address = document.getElementById('card-supplier-address').innerText;
+
+    openEditModal(id, name, phone, address);
+    closeCard();
+}
+document.getElementById('edit-supplier-form').onsubmit = function () {
+    this.submit();
+};
+    function deleteSupplier() {
+    const id = document.getElementById('card-supplier-id').innerText;
+
+    if (confirm('Удалить этого поставщика?')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '';
+
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = 'csrfmiddlewaretoken';
+        csrfInput.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        const idInput = document.createElement('input');
+        idInput.type = 'hidden';
+        idInput.name = 'delete_id';
+        idInput.value = id;
+
+        form.appendChild(csrfInput);
+        form.appendChild(idInput);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+</script>
+
+{% endblock %}

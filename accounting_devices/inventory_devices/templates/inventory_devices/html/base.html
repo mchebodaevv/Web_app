@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="sidebar">
+        <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+        <div class="menu-content">
+            <div class="elements-manage">
+                <a href="#">Устройства</a>
+                <a href="#">Журнал операций</a>
+                <a href="#">Ответственные за устройства</a>
+                <a href="#">Обслуживание</a>
+                <a href="#">Сотрудники</a>
+                <a href="#">Отчеты</a>
+                <a href="#"></a>
+            </div>
+        </div>
+    </div>
+    <div class="main-content">
+        {% block content %}{% endblock %}
+    </div>
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>
