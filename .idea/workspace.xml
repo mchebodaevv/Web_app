@@ -4,14 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="67dd3e18-b640-4c5d-9df1-d444f1007f3d" name="Changes" comment="цаоа">
-      <change afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/devices.html" afterDir="false" />
+    <list default="true" id="67dd3e18-b640-4c5d-9df1-d444f1007f3d" name="Changes" comment="zxc???">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounting_devices/accounting_devices/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/accounting_devices/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/suppliers.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/suppliers.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/departments.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/departments.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -30,6 +29,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;mchebodaevv&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/mchebodaevv/Web_app.git&quot;,
+    &quot;accountId&quot;: &quot;a5e65a69-81c2-4bc4-99ca-f6d80b9a240f&quot;
+  }
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -45,7 +56,7 @@
     &quot;Python.proverka.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;
   }
 }</component>
   <component name="RunAnythingCache">
@@ -77,12 +88,32 @@
       <option name="project" value="LOCAL" />
       <updated>1738781124418</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="zxc???">
+      <option name="closed" value="true" />
+      <created>1740439040160</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1740439040161</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="цао" />
-    <option name="LAST_COMMIT_MESSAGE" value="цао" />
+    <MESSAGE value="zxc???" />
+    <option name="LAST_COMMIT_MESSAGE" value="zxc???" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -93,8 +124,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/accounting_devices/inventory_devices/views.py</url>
-          <line>7</line>
-          <option name="timeStamp" value="2" />
+          <line>5</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/accounting_devices/inventory_devices/models.py</url>
+          <line>3</line>
+          <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

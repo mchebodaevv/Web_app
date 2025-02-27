@@ -1,6 +1,8 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from .models import Supplier,Devices
+from .models import Supplier, Devices, Department, Employee
+
+
 def index(request):
     return render(request,"inventory_devices/html/index.html")
 
@@ -108,3 +110,62 @@ def devices(request):
 
         return redirect("device_list")
     return render(request,"inventory_devices/html/devices.html",{'devices':devices_list,'device_types': device_types,'suppliers':suppliers_list,'device_status':device_status })
+def departments(request):
+    if request.method == 'POST' and 'delete_id' in request.POST:
+        department_id = request.POST.get('delete_id')
+        try:
+            print(department_id)
+            department = Department.objects.get(id=department_id)
+            department.delete()
+            success = True
+        except Devices.DoesNotExist:
+            pass
+        return redirect('departments')
+    if request.method == "POST" and "edit_dep_mode" in request.POST:
+        depart_id = request.POST.get("edit_dep_id")
+        try:
+            department = Department.objects.get(id=depart_id)
+
+            department.name= request.POST.get("edit_dep_name")
+            department.phone = request.POST.get("edit_dep_phone")
+            department.address = request.POST.get("edit_dep_address")
+
+            department.save()
+        except Department.DoesNotExist:
+            pass
+        return redirect('departments')
+    if request.method == 'POST':
+        dep_name = request.POST.get('dep_name')
+        dep_phone = request.POST.get('dep_phone')
+        dep_address = request.POST.get('dep_address')
+
+        if dep_name and dep_phone and dep_address:
+            Department.objects.create(
+                name=dep_name,
+                phone=dep_phone,
+                address=dep_address
+            )
+        return redirect('departments')
+    departments = Department.objects.all()
+    return render(request,"inventory_devices/html/departments.html",{'departments':departments})
+def employees(request):
+    employees = Employee.objects.all()
+    departments = Department.objects.all()
+    if request.method == 'POST':
+        emp_name = request.POST.get('emp_name')
+        emp_email = request.POST.get('emp_email')
+        emp_phone = request.POST.get('emp_phone')
+        emp_post = request.POST.get('emp_post')
+        emp_department = request.POST.get('emp_department')
+        department = Department.objects.get(id=emp_department)
+        if emp_name  and emp_email and emp_phone and emp_post and department:
+            Employee.objects.create(
+            name=emp_name,
+            email=emp_email,
+            phone=emp_phone,
+            post=emp_post,
+            department=department,
+        )
+        return redirect('employees')
+
+    return render(request,"inventory_devices/html/employees.html",{'employees':employees,'departments':departments})

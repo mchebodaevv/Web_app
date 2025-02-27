@@ -6,6 +6,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='home'),  # Главная страница
     path('suppliers/', views.suppliers, name='suppliers'),
-    path('devices/', views.devices, name='devices'),# Страница поставщиков
-
+    path('devices/', views.devices, name='devices'), #Страница поставщиков
+    path('departments/', views.departments, name='departments'),
+    path('employees/', views.employees, name='employees'),
 ]

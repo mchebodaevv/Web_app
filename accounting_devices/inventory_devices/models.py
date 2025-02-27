@@ -33,3 +33,20 @@ class Devices(models.Model):
     dev_status = models.CharField(max_length=15, choices=STATUS_CHOICES, verbose_name="Статус")
     def __str__(self):
         return f"{self.dev_manufact} {self.dev_model}"
+class Department(models.Model):
+    name = models.CharField(max_length=255, verbose_name="Название отдела")
+    phone = models.CharField(max_length=20, verbose_name="Телефон")
+    address = models.TextField(verbose_name="Адрес")
+    def __str__(self):
+        return self.name
+    class Meta:
+        verbose_name = "Отдел"
+        verbose_name_plural = "Отделы"
+class Employee(models.Model):
+    name = models.CharField(max_length=100, verbose_name="ФИО")
+    email = models.CharField(max_length=100, verbose_name="Электронная почта")
+    phone = models.CharField(max_length=50, unique=True, verbose_name="Номер телефона")
+    post = models. CharField(max_length=50,verbose_name="Должность")
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, verbose_name="Отдел")
+    def __str__(self):
+        return f"{self.name}"
