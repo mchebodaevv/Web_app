@@ -1,0 +1,261 @@
+{% extends "inventory_devices/html/base.html" %}
+<head>
+    {% block title %}Главная страница{% endblock %}
+</head>
+{% block content %}
+<style>
+.device-table {
+  margin: 5% auto;
+  width: 80%;
+  border-collapse: collapse;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.device-table th {
+  background: #2c3e50;
+  color: white;
+  padding: 15px;
+  text-align: left;
+}
+
+.device-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+.device-table tr:nth-child(even) {
+  background: #f8f9fa;
+}
+.modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            text-align:center;
+            background: white;
+            margin: 15% auto;
+            padding: 20px;
+            width: 20%;
+            max-width: 500px;
+            position: relative;
+            z-index: 1001;
+        }
+
+        .close {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        /* Остальные стили */
+        .device-table {
+            margin: 5% auto;
+            width: 80%;
+            border-collapse: collapse;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .device-table th {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .device-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .device-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .device-table tr:hover {
+            background: #e9ecef;
+            cursor: pointer;
+        }
+
+        .status-active { color: #28a745; }
+        .status-repair { color: #ffc107; } /* Исправлена опечатка */
+        .status-archived { color: #dc3545; }
+
+        @media (max-width: 168px) {
+            .device-table {
+                display: block;
+                overflow-x: auto;
+            }
+            /* Можете добавить мобильные стили для модалки здесь */
+        }
+  .supplier-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.form-input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-input:focus {
+  outline: 2px solid #4CAF50;
+  border-color: transparent;
+}
+.form-group label {
+    margin-top: 15px; /* Установите нужное значение отступа */
+    display: block; /* Убедитесь, что label занимает всю ширину */
+}
+.form-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+.submit-btn {
+  background: #4CAF50;
+  color: white;
+  padding: 8px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cancel-btn {
+  background: #dc3545;
+  color: white;
+  padding: 8px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.hidden {
+    display: none;
+</style>
+<h1 style="text-align:center;">Сотрудники</h1>
+<a
+  type="button"
+  style="margin: 0 80%; padding: 10px 20px; background-color: brown; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;"
+  href="{% url 'departments' %}">
+  Отделы
+</a>
+<button
+  type="button"
+  style="margin: 0 10%; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;"
+  onclick="openModal()">
+  Добавить сотрудника
+</button>
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2 style="margin-bottom: 20px;">Добавить сотрудника</h2>
+    <form method="POST" class="employees-form">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="emp_name">ФИО:</label>
+        <input type="text"
+               id="emp_name"
+               name="emp_name"
+               required
+               class="form-input">
+      </div>
+      <div class="form-group">
+        <label for="emp_email">Электронная почта:</label>
+        <input type="tel"
+               id="emp_email"
+               name="emp_email"
+               required
+               class="form-input">
+      </div>
+      <div class="form-group">
+        <label for="emp_phone">Телефон:</label>
+        <input type="tel"
+               id="emp_phone"
+               name="emp_phone"
+               required
+               class="form-input">
+      </div>
+      <div class="form-group">
+        <label for="emp_post">Должность:</label>
+        <input type="tel"
+               id="emp_post"
+               name="emp_post"
+               required
+               class="form-input">
+      </div>
+      <div class="form-group">
+            <label for="emp_department">Отдел:</label>
+            <select id="emp_department"
+                    name="emp_department"
+                    required
+                    class="form-input">
+                <option value="">-- Выберите отдел --</option>
+                {% for department in departments %}
+                    <option value="{{ department.id }}">{{ department.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+      <div class="form-actions">
+        <button type="button"
+                class="cancel-btn"
+                onclick="closeModal()">Отмена</button>
+        <button type="submit"
+                class="submit-btn">Сохранить</button>
+      </div>
+    </form>
+  </div>
+</div>
+<table class="device-table">
+  <thead>
+    <tr>
+      <th>Номер сотрудника</th>
+      <th>ФИО</th>
+      <th>Эл. почта</th>
+      <th>Номер телефона</th>
+      <th>Должность</th>
+      <th>Отдел</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for employee in employees %}
+    <tr>
+      <td>{{ employee.id }}</td>
+      <td>{{ employee.name }}</td>
+      <td>{{ employee.email }}</td>
+      <td>{{ employee.phone }}</td>
+      <td>{{ employee.post }}</td>
+      <td>{{ employee.department }}</td>
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
+<script>
+  function openModal() {
+        document.getElementById("modal").style.display = "block";
+    }
+    function closeModal() {
+        document.getElementById("modal").style.display = "none";
+    }
+    window.onclick = function(event) {
+        const modal = document.getElementById("modal");
+        if (event.target === modal) {
+            closeModal();
+        }
+    };
+</script>
+{% endblock %}
