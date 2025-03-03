@@ -151,6 +151,32 @@ def departments(request):
 def employees(request):
     employees = Employee.objects.all()
     departments = Department.objects.all()
+    if request.method == 'POST' and 'delete_id' in request.POST:
+        employee_id = request.POST.get('delete_id')
+        try:
+            employee = Employee.objects.get(id=employee_id)
+            employee.delete()
+            success = True
+        except Employee.DoesNotExist:
+            pass
+        return redirect('employees')
+    if request.method == "POST" and "edit_emp_mode" in request.POST:
+        employee_id = request.POST.get("edit_emp_id")
+        department_id = request.POST.get("edit_emp_department")
+        try:
+            employee = Employee.objects.get(id=employee_id)
+            department = Department.objects.get(id=department_id)
+
+            employee.name = request.POST.get("edit_emp_name")
+            employee.email = request.POST.get("edit_emp_email")
+            employee.phone = request.POST.get("edit_emp_phone")
+            employee.post = request.POST.get("edit_emp_post")
+            employee.department = department
+
+            employee.save()
+        except Employee.DoesNotExist:
+            pass
+        return redirect('employees')
     if request.method == 'POST':
         emp_name = request.POST.get('emp_name')
         emp_email = request.POST.get('emp_email')

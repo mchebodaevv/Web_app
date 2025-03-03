@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="67dd3e18-b640-4c5d-9df1-d444f1007f3d" name="Changes" comment="3" />
+    <list default="true" id="67dd3e18-b640-4c5d-9df1-d444f1007f3d" name="Changes" comment="3">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/employees.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/employees.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/views.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -96,7 +100,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740660802333</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="3">
+      <option name="closed" value="true" />
+      <created>1740663861069</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1740663861069</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
