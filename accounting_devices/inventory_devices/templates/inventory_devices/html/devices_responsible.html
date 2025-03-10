@@ -1,0 +1,477 @@
+{% extends "inventory_devices/html/base.html" %}
+<head>
+    {% block title %}Выдача устройств{% endblock %}
+</head>
+{% block content %}
+<style>
+.device-table {
+  margin: 5% auto;
+  width: 80%;
+  border-collapse: collapse;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.device-table th {
+  background: #2c3e50;
+  color: white;
+  padding: 15px;
+  text-align: left;
+}
+
+.device-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+.device-table tr:nth-child(even) {
+  background: #f8f9fa;
+}
+.modal {
+            display: none; /* Скрыто по умолчанию */
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            text-align:center;
+            background: white;
+            margin: 15% auto;
+            padding: 20px;
+            width: 20%;
+            max-width: 500px;
+            position: relative;
+            z-index: 1001;
+        }
+
+        .close {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        /* Остальные стили */
+        .device-table {
+            margin: 5% auto;
+            width: 80%;
+            border-collapse: collapse;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .device-table th {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .device-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .device-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .device-table tr:hover {
+            background: #e9ecef;
+            cursor: pointer;
+        }
+
+        .status-active { color: #28a745; }
+        .status-repair { color: #ffc107; } /* Исправлена опечатка */
+        .status-archived { color: #dc3545; }
+
+        @media (max-width: 168px) {
+            .device-table {
+                display: block;
+                overflow-x: auto;
+            }
+            /* Можете добавить мобильные стили для модалки здесь */
+        }
+  .supplier-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.device-card {
+    text-align: left; /* Выравнивание текста влево */
+    padding: 20px; /* Добавьте отступы, если нужно */
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.form-input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-input:focus {
+  outline: 2px solid #4CAF50;
+  border-color: transparent;
+}
+.form-group label {
+    margin-top: 15px; /* Установите нужное значение отступа */
+    display: block; /* Убедитесь, что label занимает всю ширину */
+}
+.form-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+.submit-btn {
+  background: #4CAF50;
+  color: white;
+  padding: 8px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cancel-btn {
+  background: #dc3545;
+  color: white;
+  padding: 8px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.hidden {
+    display: none;
+
+</style>
+
+<h1 style="color: #333; font-size: 36px; text-align: center;">Выдача устройств</h1>
+
+<button
+  type="button"
+  style="margin: 0 10%; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;"
+  id="openModal"
+  onclick="openModal()">
+  Выдать устройство
+</button>
+<div id="errorModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeErrorModal()">&times;</span>
+    <h2 style="margin-bottom: 20px;">Ошибка</h2>
+    <p id="errorMessage"></p>
+    <div class="form-actions">
+      <button type="button" class="cancel-btn" onclick="closeErrorModal()">Закрыть</button>
+    </div>
+  </div>
+</div>
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2 style="margin-bottom: 20px;">Выдать устройство</h2>
+    <form method="POST" class="responsible-form" >
+      {% csrf_token %}
+      <div class="form-group">
+            <label for="res_dev">Устройство (инв. номер):</label>
+            <select id="res_dev"
+                    name="res_dev"
+                    required
+                    class="form-input">
+                <option value="">-- Выберите устройство --</option>
+                {% for device in devices %}
+                    <option value="{{ device.id }}">{{ device.dev_manufact }} {{ device.dev_model }} (#{{ device.inv_num }})</option>
+                {% endfor %}
+            </select>
+            <label for="res_dev">Сотрудник:</label>
+            <select id="res_emp"
+                    name="res_emp"
+                    required
+                    class="form-input">
+                <option value="">-- Выберите сотрудника --</option>
+                {% for employee in employees %}
+                    <option value="{{ employee.id }}">{{ employee.name }}</option>
+                {% endfor %}
+            </select>
+      </div>
+      <div class="form-group">
+            <label for="date_assigned">Дата выдачи:</label>
+            <input type="date"
+                   id="date_assigned"
+                   name="date_assigned"
+                   required
+                   class="form-input">
+      </div>
+      <div class="form-actions">
+            <button type="button"
+                    class="cancel-btn"
+                    onclick="closeModal()">Отмена</button>
+            <button type="submit"
+                    class="submit-btn">Выдать</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="ReturnDeviceModal" class="modal" style="">
+    <div class="modal-content" style="text-align:left;width:400px;">
+        <span class="close" onclick="closeReturnModal()">&times;</span>
+        <h2>Вернуть устройство</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="return_mode" value="1">
+            <input type="hidden" id="return_id" name="return_id">
+            <h4 style="display: inline;">Устройство (инв.номер): </h4><p style="display: inline;" id="return_inv_num"></p>
+            <br>
+            <br>
+            <h4 style="display: inline;]">Сотрудник: </h4><p style="display: inline;" id="return_employee"></p>
+            <br>
+            <br>
+            <h4 style="display: inline;">Дата выдачи: </h4><p style="display: inline;" id="return_date_assigned" ></p>
+            <input type="hidden" id="return_date_assignedd" name="return_date_assignedd" />
+            <input type="hidden" id="return_device_id" name="return_device_id" />
+            <br>
+            <br>
+            <h4 style="display: inline;">Дата возврата: </h4>
+            <div class="form-group">
+            <input type="date"
+                   required
+                   name="date_returned"
+                   class="form-input"
+                   style="margin-top:10px;">
+            </div>
+            <div class="form-actions">
+            <button type="button"
+                    class="cancel-btn"
+                    onclick="closeModal()">Отмена</button>
+            <button type="submit"
+                    class="submit-btn">Вернуть</button>
+            </div>
+        </form>
+        </div>
+        </form>
+    </div>
+<div id="editDeviceModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeEditModal()">&times;</span>
+        <h2>Редактировать запись</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="edit_mode" value="1">
+            <input type="hidden" id="edit_id" name="edit_id">
+            <div class="form-group">
+                <label for="edit_inv_num">Устройство (инв. номер):</label>
+                <select id="edit_inv_num"
+                    name="edit_inv_num"
+                    required
+                    class="form-input">
+                <option value="">-- Выберите устройство --</option>
+                {% for device in devices %}
+                    <option value="{{ device.id }}">{{ device.dev_manufact }} {{ device.dev_model }} (#{{ device.inv_num }})</option>
+                {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="edit_employee">Сотрудник:</label>
+                <select id="edit_employee"
+                    name="edit_employee"
+                    required
+                    class="form-input">
+                <option value="">-- Выберите сотрудника --</option>
+                {% for employee in employees %}
+                    <option value="{{ employee.id }}">{{ employee.name }}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="edit_date_assigned">Дата выдачи:</label>
+                <input type="date" id="edit_date_assigned" name="edit_date_assigned" required class="form-input">
+            </div>
+            <div class="form-group" id="edit_date_return_group" style="display: none;">
+                <label for="edit_date_return">Дата возврата:</label>
+                <input type="date" id="edit_date_return" name="edit_date_return" class="form-input">
+            </div>
+            <div class="form-actions">
+                <button type="button" class="cancel-btn" onclick="closeEditModal()">Отмена</button>
+                <button type="submit" class="submit-btn">Сохранить</button>
+            </div>
+        </form>
+    </div>
+</div>
+<table class="device-table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Устройство (инв. номер)</th>
+      <th>Сотрудник</th>
+      <th>Дата выдачи</th>
+      <th>Дата возврата</th>
+      <th>Статус</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for repsponsible in repsponsibles %}
+    <tr onclick="openDeviceCard( '{{ repsponsible.id }}','{{ repsponsible.device.inv_num }}', '{{ repsponsible.employee }}','{{ repsponsible.date_assigned|date:"d-m-Y" }}','{{ repsponsible.date_returned|date:"d-m-Y" }}','{{ repsponsible.device.id }}','{{ repsponsible.employee.id }}')">
+      <td>{{ repsponsible.id }}</td>
+      <td>{{ repsponsible.device.inv_num }}</td>
+      <td>{{ repsponsible.employee }}</td>
+      <td>{{ repsponsible.date_assigned|date:"d-m-Y" }}</td>
+      <td>{{ repsponsible.date_returned|date:"d-m-Y" }}</td>
+      <td>{{ repsponsible.status }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div id="deviceCardModal" class="modal">
+    <div class="modal-content">
+        <div id="deviceCardContent">
+            <!-- Данные устройства будут вставляться через JavaScript -->
+        </div>
+    </div>
+</div>
+<script>
+  function openModal() {
+        document.getElementById("modal").style.display = "block";
+    }
+    function closeModal() {
+        document.getElementById("modal").style.display = "none";
+    }
+    function openErrorModal(message) {
+        document.getElementById("errorMessage").innerText = message;
+        document.getElementById("errorModal").style.display = "block";
+    }
+    function closeErrorModal() {
+        document.getElementById("errorModal").style.display = "none";
+    }
+    window.onclick = function(event) {
+        const modal = document.getElementById("modal");
+        const errorModal = document.getElementById("errorModal");
+        if (event.target === modal) {
+            closeModal();
+        }
+        if (event.target === errorModal) {
+            closeErrorModal();
+        }
+    };
+    function openDeviceCard(id,inv_num, employee,date_assigned,date_returned, device_id,employee_id) {
+    const modal = document.getElementById("deviceCardModal");
+    const content = document.getElementById("deviceCardContent");
+    let returnDateHTML = '';
+    let returnButtonHTML = '';
+
+    // Проверяем, есть ли дата возврата
+    if (!date_returned) {
+        returnButtonHTML = `<button onclick="closeDeviceCard();openReturnModal('${id}','${inv_num}','${employee}','${date_assigned}','${device_id}')" style="background: green; margin-left: 85px; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; transition: background-color 0.3s ease;">Вернуть</button>`;
+    }
+    if (date_returned) {
+        returnDateHTML = `<p><strong>Дата возврата:</strong> ${date_returned}</p>`;
+    }
+    content.innerHTML = `
+    <div class="device-card">
+        <button class="close-btn" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 18px; font-weight: bold; cursor: pointer; color: #333;" onclick="closeDeviceCard()">×</button>
+        <p><strong>Устройство (инв. номер):</strong> ${inv_num}</p>
+        <p><strong>Сотрудник:</strong> ${employee}</p>
+        <p><strong>Дата выдачи:</strong> ${date_assigned}</p>
+        ${returnDateHTML} <!-- Вставляем HTML для даты возврата, если она есть -->
+        <button onclick="closeDeviceCard();openEditModal('${id}','${device_id}','${employee_id}','${date_assigned}','${date_returned}')" style="background: #007bff; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; transition: background-color 0.3s ease;">Редактировать</button>
+        <button onclick="deleteDevice(${id})" class="cancel-btn">Удалить</button>
+        ${returnButtonHTML} <!-- Вставляем кнопку "Вернуть", если дата возврата есть -->
+    </div>
+    `;
+    modal.style.display = "block"; // Показываем модальное окно
+}
+function closeDeviceCard() {
+    document.getElementById("deviceCardModal").style.display = "none";
+}
+function openReturnModal(id, inv_num, employee, date_assigned,device_id) {
+    document.getElementById('return_device_id').value = device_id;
+    document.getElementById('return_id').value = id;
+    document.getElementById('return_inv_num').textContent = inv_num;
+    document.getElementById('return_employee').textContent = employee;
+    document.getElementById('return_date_assigned').textContent = date_assigned;
+    document.getElementById('return_date_assignedd').value = date_assigned;
+    document.getElementById('ReturnDeviceModal').style.display = 'block';
+}
+function closeReturnModal() {
+    document.getElementById('ReturnDeviceModal').style.display = 'none';
+}
+function deleteDevice(dev_id) {
+     if (confirm('Удалить эту запись?')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '';
+
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = 'csrfmiddlewaretoken';
+        csrfInput.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        const idInput = document.createElement('input');
+        idInput.type = 'hidden';
+        idInput.name = 'delete_id';
+        idInput.value = dev_id;
+
+        form.appendChild(csrfInput);
+        form.appendChild(idInput);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+function openEditModal(id, device_id, employee_id, date_assigned, date_returned) {
+    document.getElementById('edit_id').value = id;
+    document.getElementById('edit_inv_num').value = device_id;
+    document.getElementById('edit_employee').value = employee_id;
+
+    const partsAssigned = date_assigned.split("-"); // Разделяем строку "DD-MM-YYYY"
+    if (partsAssigned.length === 3) {
+        const formattedAssignedDate = `${partsAssigned[2]}-${partsAssigned[1]}-${partsAssigned[0]}`; // Переставляем в "YYYY-MM-DD"
+        document.getElementById('edit_date_assigned').value = formattedAssignedDate;
+    }
+
+    // Проверяем, есть ли дата возврата
+    if (date_returned) {
+        const partsReturned = date_returned.split("-"); // Разделяем строку "DD-MM-YYYY"
+        if (partsReturned.length === 3) {
+            const formattedReturnedDate = `${partsReturned[2]}-${partsReturned[1]}-${partsReturned[0]}`; // Переставляем в "YYYY-MM-DD"
+            document.getElementById('edit_date_return').value = formattedReturnedDate;
+            document.getElementById('edit_date_return_group').style.display = 'flex'; // Показываем поле даты возврата
+        }
+    } else {
+        document.getElementById('edit_date_return_group').style.display = 'none'; // Скрываем поле даты возврата
+    }
+
+    document.getElementById('editDeviceModal').style.display = 'block';
+}
+function closeEditModal() {
+    document.getElementById('editDeviceModal').style.display = 'none';
+}
+function toggleReturnDateField(condition) {
+    const returnDateField = document.getElementById('edit_date_return');
+    const returnDateGroup = document.getElementById('edit_date_return_group');
+
+    if (condition) {
+        returnDateGroup.style.display = 'block'; // Показываем поле
+        returnDateField.setAttribute('required', 'required'); // Делаем обязательным
+    } else {
+        returnDateGroup.style.display = 'none'; // Скрываем поле
+        returnDateField.removeAttribute('required'); // Убираем обязательность
+        returnDateField.value = ''; // Сбрасываем значение
+    }
+}
+</script>
+{% if error_message %}
+    <script>
+        openErrorModal("{{ error_message|escapejs }}");
+    </script>
+{% endif %}
+{% endblock %}

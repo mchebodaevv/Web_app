@@ -4,10 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="67dd3e18-b640-4c5d-9df1-d444f1007f3d" name="Changes" comment="3">
+    <list default="true" id="67dd3e18-b640-4c5d-9df1-d444f1007f3d" name="Changes" comment="employee">
+      <change afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/devices_responsible.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/employees.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/employees.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounting_devices/accounting_devices/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/accounting_devices/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/migrations/0002_rename_address_supplier_supp_address_and_more.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/migrations/0003_devices.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/migrations/0004_alter_devices_dev_status.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/migrations/0005_alter_devices_dev_status_alter_devices_dev_type.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/migrations/0006_department.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/migrations/0007_employee.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/devices.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/devices.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/proverka.py" beforeDir="false" afterPath="$PROJECT_DIR$/proverka.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,7 +121,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740663861069</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="employee">
+      <option name="closed" value="true" />
+      <created>1741022587899</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1741022587899</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -126,7 +147,8 @@
     <MESSAGE value="цао" />
     <MESSAGE value="zxc???" />
     <MESSAGE value="3" />
-    <option name="LAST_COMMIT_MESSAGE" value="3" />
+    <MESSAGE value="employee" />
+    <option name="LAST_COMMIT_MESSAGE" value="employee" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -137,13 +159,28 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/accounting_devices/inventory_devices/views.py</url>
-          <line>5</line>
+          <line>8</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/accounting_devices/inventory_devices/models.py</url>
           <line>3</line>
           <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/accounting_devices/inventory_devices/models.py</url>
+          <line>53</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/accounting_devices/inventory_devices/views.py</url>
+          <line>118</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/accounting_devices/inventory_devices/views.py</url>
+          <line>56</line>
+          <option name="timeStamp" value="13" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

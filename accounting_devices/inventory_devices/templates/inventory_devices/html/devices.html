@@ -213,6 +213,14 @@
             </select>
         </div>
         <div class="form-group">
+            <label for="inv_num">Инвентарный номер:</label>
+            <input type="tel"
+                   id="inv_num"
+                   name="inv_num"
+                   required
+                   class="form-input">
+        </div>
+        <div class="form-group">
             <label for="dev_number">Серийный номер:</label>
             <input type="tel"
                    id="dev_number"
@@ -291,6 +299,10 @@
             </select>
             </div>
             <div class="form-group">
+                <label for="edit_inv_num">Серийный номер:</label>
+                <input type="text" id="edit_inv_num" name="edit_inv_num" required class="form-input">
+            </div>
+            <div class="form-group">
                 <label for="edit_dev_number">Серийный номер:</label>
                 <input type="text" id="edit_dev_number" name="edit_dev_number" required class="form-input">
             </div>
@@ -334,10 +346,11 @@
 <table class="device-table">
   <thead>
     <tr>
-      <th>Номер устройства</th>
+      <th>ID</th>
       <th>Производитель</th>
       <th>Модель</th>
       <th>Тип</th>
+      <th>Инв. номер</th>
       <th class="hidden">Серийный номер</th>
       <th>Дата приобритения</th>
       <th>Поставщик</th>
@@ -346,11 +359,12 @@
   </thead>
   <tbody>
     {% for device in devices %}
-    <tr onclick="openDeviceCard({{ device.id }}, '{{ device.dev_manufact }}', '{{ device.dev_model }}', '{{ device.dev_type }}', '{{ device.dev_number }}', '{{ device.dev_buydate|date:"d-m-Y" }}', '{{ device.dev_supplier }}', '{{ device.dev_status }}','{{ device.dev_supplier_id }}')">
+    <tr onclick="openDeviceCard({{ device.id }}, '{{ device.dev_manufact }}', '{{ device.dev_model }}', '{{ device.dev_type }}','{{ device.inv_num }}', '{{ device.dev_number }}', '{{ device.dev_buydate|date:"d-m-Y" }}', '{{ device.dev_supplier }}', '{{ device.dev_status }}','{{ device.dev_supplier_id }}')">
         <td>{{ device.id }}</td>
         <td>{{ device.dev_manufact }}</td>
         <td>{{ device.dev_model }}</td>
         <td>{{ device.dev_type }}</td>
+        <td>{{ device.inv_num }}</td>
         <td class="hidden">{{ device.dev_number }}</td>
         <td>{{ device.dev_buydate|date:"d-m-Y" }}</td>
         <td>{{ device.dev_supplier }}</td>
@@ -381,7 +395,7 @@ window.onclick = function(event) {
     const formattedDate = today.toISOString().split('T')[0];
     document.getElementById('dev_buydate').value = formattedDate;
 
-function openDeviceCard(id, manufact, model, type, serial, buyDate, supplier, status,supplier_id) {
+function openDeviceCard(id, manufact, model, type,inv_num , serial, buyDate, supplier, status,supplier_id) {
 
     const modal = document.getElementById("deviceCardModal");
     const content = document.getElementById("deviceCardContent");
@@ -400,11 +414,12 @@ function openDeviceCard(id, manufact, model, type, serial, buyDate, supplier, st
             <p><strong>Производитель:</strong> ${manufact}</p>
             <p><strong>Модель:</strong> ${model}</p>
             <p><strong>Тип:</strong> ${type}</p>
+            <p><strong>Инвентарный номер:</strong> ${inv_num}</p>
             <p><strong>Серийный номер:</strong> ${serial}</p>
             <p><strong>Дата покупки:</strong> ${buyDate}</p>
             <p><strong>Поставщик:</strong> ${supplier}</p>
             <p><strong>Статус:</strong> ${status}</p>
-            <button onclick="closeDeviceCard();openEditModal(${id}, '${manufact}', '${model}', '${type}', '${serial}', convertDateFormat('${buyDate}'), '${supplier}', '${status}','${supplier_id}')" style="background: #007bff; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; transition: background-color 0.3s ease;">
+            <button onclick="closeDeviceCard();openEditModal(${id}, '${manufact}', '${model}', '${type}','${inv_num}', '${serial}', convertDateFormat('${buyDate}'), '${supplier}', '${status}','${supplier_id}')" style="background: #007bff; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; transition: background-color 0.3s ease;">
             Редактировать
             </button>
   <button onclick="deleteDevice(${id})" class="cancel-btn">Удалить</button>
@@ -425,12 +440,13 @@ window.onclick = function(event) {
         closeDeviceCard();
     }
 };
-function openEditModal(id, manufact, model, type, serial, buyDate, supplier, status, supplier_id) {
+function openEditModal(id, manufact, model, type,inv_num, serial, buyDate, supplier, status, supplier_id) {
     console.log(supplier_id);
     document.getElementById('edit_dev_id').value = id;
     document.getElementById('edit_dev_manufact').value = manufact;
     document.getElementById('edit_dev_model').value = model;
     document.getElementById('edit_dev_type').value = type;
+    document.getElementById('edit_inv_num').value = inv_num;
     document.getElementById('edit_dev_number').value = serial;
     document.getElementById('edit_dev_buydate').value = buyDate;
     document.getElementById('edit_dev_supplier').value = supplier_id;
