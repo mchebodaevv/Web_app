@@ -1,10 +1,8 @@
 {% extends "inventory_devices/html/base.html" %}
-<head>
-    {% block title %}Заявки{% endblock %}
-</head>
+
 {% block content %}
 <style>
-.device-table {
+  .device-table {
   margin: 5% auto;
   width: 80%;
   border-collapse: collapse;
@@ -164,86 +162,76 @@
 .close-btn:hover {
     color: red;
 }
-
 </style>
-<h1 style="color: #333; font-size: 36px; text-align: center;">Заявки</h1>
+<h1 style="color: #333; font-size: 36px; text-align: center;">Мои заявки</h1>
 <button
   type="button"
   style="margin: 0 10%; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;"
-  id="openModal"
   onclick="openModal()">
   Создать заявку
 </button>
 <div id="modal" class="modal">
   <div class="modal-content">
     <span class="close" onclick="closeModal()">&times;</span>
-    <h2 style="margin-bottom: 20px;">Cоздать заявку</h2>
-    <form method="POST" class="employees-form">
-      <div class="form-group">
-        {% csrf_token %}
-        <label for="app_dev">Устройство (инв. номер):</label>
-        <select id="app_dev"
-          name="app_dev"
-          required
-          class="form-input">
-          <option value="">-- Выберите устройство --</option>
-          {% for device in devices %}
-            <option value="{{ device.id }}">{{ device.dev_manufact }} {{ device.dev_model }} (#{{ device.inv_num }})</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="app_emp">Сотрудник:</label>
-        <select id="app_emp"
-          name="app_emp"
-          required
-          class="form-input">
-          <option value="">-- Выберите сотрудника --</option>
-          {% for employee in employees %}
-          <option value="{{ employee.id }}">{{ employee.name }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="form-group">
+
+    <h2 style="margin-bottom: 20px;">Создание заявки</h2>
+
+    <form method="POST" class="departments-form">
+      {% csrf_token %}
+        {% if user.is_authenticated %}
+          <input type="hidden" name="emp_id" value="{{ user.employee.id }}">
+        {% endif %}
+       <div class="form-group">
+
+            <label for="dev">Устройство (инв. номер):</label>
+            <select id="dev"
+                    name="dev"
+                    required
+                    class="form-input">
+                <option value="">-- Выберите устройство --</option>
+                {% for record in devices %}
+                    <option value="{{ record.device.id }}">{{ record.device.dev_manufact }} {{ record.device.dev_model }} (#{{ record.device.inv_num }})</option>
+                {% endfor %}
+            </select>
+       </div>
+       <div class="form-group">
         <label for="app_desc">Описание:</label>
         <textarea id="app_desc"
                   name="app_desc"
                   rows="3"
                   required
                   class="form-input"></textarea>
-      </div>
-      <div class="form-actions">
-        <button type="button"
-                class="cancel-btn"
-                onclick="closeModal()">Отмена</button>
-        <button type="submit"
-                class="submit-btn">Сохранить</button>
-      </div>
+       </div>
+       <div class="form-actions">
+            <button type="button"
+                    class="cancel-btn"
+                    onclick="closeModal()">Отмена</button>
+            <button type="submit"
+                    class="submit-btn">Сохранить</button>
+       </div>
     </form>
   </div>
 </div>
-<table class="device-table">
-  <thead>
-    <tr>
-      <th>Номер</th>
-      <th>Устройство (инв. номер)</th>
-      <th>Сотрудник</th>
-      <th>Дата</th>
-      <th>Статус</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for application in applications %}
-    <tr>
-      <td>{{ application.id }}</td>
-      <td>{{ application.device }}  (#{{ application.device.inv_num }})</td>
-      <td>{{ application.employee }}</td>
-      <td>{{ application.created_at|date:"d-m-Y" }}</td>
-      <td>{{ application.status }}</td>
-    </tr>
-    {% endfor %}
-</tbody>
-</table>
+{% if applications %}
+    <table class="device-table">
+        <tr>
+            <th>ID</th>
+            <th>Устройство (инв. номер)</th>
+            <th>Дата создания</th>
+            <th>Статус</th>
+        </tr>
+        {% for record in applications %}
+        <tr>
+            <td>{{ record.id }}</td>
+            <td>{{ record.device }} (#{{ record.device.inv_num }})</td>
+            <td>{{ record.created_at|date:"d-m-Y" }}</td>
+            <td>{{ record.status }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>У вас пока нет назначенных устройств.</p>
+{% endif %}
 <script>
   function openModal() {
         document.getElementById("modal").style.display = "block";

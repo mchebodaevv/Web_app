@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-s#pa(2&nnli$&lp^i7tzw8sj!@3m1so54qq!%gyt)_os&#cddg
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.0.14']
 
 
 # Application definition
@@ -121,7 +121,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+# settings.py
 
+LOGIN_REDIRECT_URL = '/'  # Перенаправление на главную страницу после входа
+LOGOUT_REDIRECT_URL = 'login'
+LOGIN_URL = 'login'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 

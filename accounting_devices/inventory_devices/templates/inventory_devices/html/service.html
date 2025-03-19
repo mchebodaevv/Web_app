@@ -166,62 +166,19 @@
 }
 
 </style>
-<h1 style="color: #333; font-size: 36px; text-align: center;">Заявки</h1>
+<h1 style="color: #333; font-size: 36px; text-align: center;">Обслуживание</h1>
 <button
   type="button"
   style="margin: 0 10%; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;"
-  id="openModal"
-  onclick="openModal()">
+  id="openModal">
   Создать заявку
 </button>
-<div id="modal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <h2 style="margin-bottom: 20px;">Cоздать заявку</h2>
-    <form method="POST" class="employees-form">
-      <div class="form-group">
-        {% csrf_token %}
-        <label for="app_dev">Устройство (инв. номер):</label>
-        <select id="app_dev"
-          name="app_dev"
-          required
-          class="form-input">
-          <option value="">-- Выберите устройство --</option>
-          {% for device in devices %}
-            <option value="{{ device.id }}">{{ device.dev_manufact }} {{ device.dev_model }} (#{{ device.inv_num }})</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="app_emp">Сотрудник:</label>
-        <select id="app_emp"
-          name="app_emp"
-          required
-          class="form-input">
-          <option value="">-- Выберите сотрудника --</option>
-          {% for employee in employees %}
-          <option value="{{ employee.id }}">{{ employee.name }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="app_desc">Описание:</label>
-        <textarea id="app_desc"
-                  name="app_desc"
-                  rows="3"
-                  required
-                  class="form-input"></textarea>
-      </div>
-      <div class="form-actions">
-        <button type="button"
-                class="cancel-btn"
-                onclick="closeModal()">Отмена</button>
-        <button type="submit"
-                class="submit-btn">Сохранить</button>
-      </div>
-    </form>
-  </div>
-</div>
+<a
+  type="button"
+  style="margin: 0 80%; padding: 10px 20px; background-color: brown; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;"
+  onclick="openModal()" href="{% url 'applications' %}">
+  Заявки
+</a>
 <table class="device-table">
   <thead>
     <tr>
@@ -232,30 +189,5 @@
       <th>Статус</th>
     </tr>
   </thead>
-  <tbody>
-    {% for application in applications %}
-    <tr>
-      <td>{{ application.id }}</td>
-      <td>{{ application.device }}  (#{{ application.device.inv_num }})</td>
-      <td>{{ application.employee }}</td>
-      <td>{{ application.created_at|date:"d-m-Y" }}</td>
-      <td>{{ application.status }}</td>
-    </tr>
-    {% endfor %}
-</tbody>
 </table>
-<script>
-  function openModal() {
-        document.getElementById("modal").style.display = "block";
-    }
-    function closeModal() {
-        document.getElementById("modal").style.display = "none";
-    }
-    window.onclick = function(event) {
-        const modal = document.getElementById("modal");
-        if (event.target === modal) {
-            closeModal();
-        }
-    };
-</script>
 {% endblock %}

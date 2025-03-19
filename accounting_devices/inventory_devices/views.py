@@ -3,12 +3,42 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from django.contrib import messages
 from django.db import IntegrityError
-from .models import Supplier, Devices, Department, Employee, Responsible
+from .models import Supplier, Devices, Department, Employee, Responsible, Applications
 from django.utils import timezone
 from datetime import datetime
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth import logout
+
+def login_view(request):
+    if request.method == 'POST':
+        # Получаем данные из формы
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        # Проверяем, правильно ли введены данные
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            # Если пользователь найден, выполняем вход
+            login(request, user)
+            return redirect('home')  # Перенаправляем на домашнюю страницу после входа
+        else:
+            # Если данные неправильные, показываем ошибку
+            return render(request, 'login.html', {'error': 'Неверное имя пользователя или пароль'})
+
+    return render(request, 'login.html')
+def user_logout(request):
+    logout(request)  # Выход из системы
+    return redirect('home')
+def is_admin(user):
+    return user.groups.filter(name="Администратор").exists()
+def is_user(user):
+    return user.groups.filter(name="Пользователь").exists()
+@login_required
 def index(request):
     return render(request,"inventory_devices/html/index.html")
-
+@login_required
 def suppliers(request):
     success = False
     if request.method == 'POST' and 'delete_id' in request.POST:
@@ -54,6 +84,8 @@ def suppliers(request):
         'suppliers': suppliers_list,
         'success': success,
     })
+@login_required
+@user_passes_test(is_admin)
 def devices(request):
     devices_list = Devices.objects.all()
     device_types = Devices.DEVICE_TYPES
@@ -116,6 +148,7 @@ def devices(request):
 
         return redirect("device_list")
     return render(request,"inventory_devices/html/devices.html",{'devices':devices_list,'device_types': device_types,'suppliers':suppliers_list,'device_status':device_status })
+@login_required
 def departments(request):
     if request.method == 'POST' and 'delete_id' in request.POST:
         department_id = request.POST.get('delete_id')
@@ -154,6 +187,7 @@ def departments(request):
         return redirect('departments')
     departments = Department.objects.all()
     return render(request,"inventory_devices/html/departments.html",{'departments':departments})
+@login_required
 def employees(request):
     employees = Employee.objects.all()
     departments = Department.objects.all()
@@ -201,6 +235,7 @@ def employees(request):
         return redirect('employees')
 
     return render(request,"inventory_devices/html/employees.html",{'employees':employees,'departments':departments})
+@login_required
 def devices_responsible(request):
     error_message = None
     repsponsibles = Responsible.objects.all()
@@ -350,4 +385,82 @@ def devices_responsible(request):
         'devices': devices,
         'employees': employees,
         'error_message': error_message
+    })
+@login_required
+def employee_devices(request, employee_id):
+    try:
+        employee = Employee.objects.get(id=employee_id)
+        devices = Responsible.objects.filter(employee=employee,date_returned__isnull=True)  # Только не возвращенные устройства
+    except Employee.DoesNotExist:
+        devices = None
+
+    return render(request, "inventory_devices/html/employee_devices.html", {
+        "employee": employee,
+        "devices": devices
+    })
+@login_required
+def applications(request):
+    applications = Applications.objects.all()
+    devices = Devices.objects.all()
+    employees = Employee.objects.all()
+    if request.method == 'POST':
+        device_id = request.POST.get('app_dev')
+        employee_id = request.POST.get('app_emp')
+        description = request.POST.get('app_desc')
+        device = Devices.objects.get(id=device_id)
+        employee = Employee.objects.get(id=employee_id)
+        if description  and device and employee:
+            Applications.objects.create(
+            device=device,
+            employee=employee,
+            description=description,
+        )
+        return redirect('applications')
+    return render(request,"inventory_devices/html/applications.html",{'applications':applications,'devices':devices,'employees':employees})
+@login_required
+def service(request):
+    return render(request,"inventory_devices/html/service.html")
+
+
+@login_required
+def my_devices(request):
+    try:
+        employee = Employee.objects.get(user=request.user)  # Находим сотрудника, привязанного к пользователю
+        devices = Responsible.objects.filter(employee=employee,
+                                             date_returned__isnull=True)  # Только активные устройства
+    except Employee.DoesNotExist:
+        devices = None
+
+    return render(request, "inventory_devices/html/my_devices.html", {
+        "devices": devices
+    })
+
+@login_required
+def my_applications(request):
+
+    try:
+        employee = Employee.objects.get(user=request.user)  # Находим сотрудника, привязанного к пользователю
+        devices = Responsible.objects.filter(employee=employee,
+                                             date_returned__isnull=True)  # Только активные устройства
+        applications = Applications.objects.filter(employee=employee)
+    except Employee.DoesNotExist:
+        devices = None
+    if request.method == 'POST':
+
+        emp_id = request.POST.get('emp_id')
+        dev = request.POST.get('dev')
+        app_desc = request.POST.get('app_desc')
+        device = Devices.objects.get(id=dev)
+        employee = Employee.objects.get(id=emp_id)
+        if app_desc and device and employee:
+            Applications.objects.create(
+                device=device,
+                employee=employee,
+                description=app_desc,
+            )
+        return redirect('my_applications')
+    return render(request, "inventory_devices/html/my_applications.html", {
+        "devices": devices,
+        "applications": applications,
+
     })

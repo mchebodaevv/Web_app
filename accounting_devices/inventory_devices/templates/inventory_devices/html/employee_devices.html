@@ -1,0 +1,28 @@
+{% extends "inventory_devices/html/base.html" %}
+
+{% block content %}
+<h2>Устройства сотрудника {{ employee.name }}</h2>
+
+{% if devices %}
+    <table border="1">
+        <tr>
+            <th>Модель</th>
+            <th>Тип</th>
+            <th>Инвентарный номер</th>
+            <th>Дата назначения</th>
+        </tr>
+        {% for record in devices %}
+        <tr>
+            <td>{{ record.device.dev_model }}</td>
+            <td>{{ record.device.dev_type }}</td>
+            <td>{{ record.device.inv_num }}</td>
+            <td>{{ record.date_assigned }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>Нет закрепленных устройств.</p>
+{% endif %}
+
+<a href="{% url 'employees' %}">Назад к списку сотрудников</a>
+{% endblock %}

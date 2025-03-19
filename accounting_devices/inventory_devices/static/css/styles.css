@@ -81,7 +81,7 @@ body {
     .device-card {
       padding: 15px;
     }
-    
+
     .filters {
       flex-direction: column;
     }
@@ -99,7 +99,7 @@ body {
       border-radius: 8px;
       z-index: 1000;
   }
-  
+
   .card-header {
       display: flex;
       justify-content: space-between;
@@ -122,7 +122,7 @@ body {
       border-radius: 5px;
       cursor: pointer;
   }
-  
+
   .card-header button:hover {
       background: #c0392b;
   }
