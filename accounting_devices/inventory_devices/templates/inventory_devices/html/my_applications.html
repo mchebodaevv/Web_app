@@ -123,28 +123,15 @@
   border-radius: 4px;
   cursor: pointer;
 }
-.hidden {
-    display: none;
-.device-card {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 20px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 300px;
-    text-align: left;
+.device-card{
+    word-wrap: break-word; /* Перенос длинных слов */
+    overflow-wrap: break-word; /* Альтернативный способ переноса */
+    white-space: normal;
 }
-
-.device-card h3 {
-    margin-bottom: 10px;
-    color: #333;
-}
-
 .device-card p {
-    margin: 5px 0;
+    text-align: left;
+    padding: 0px;
+    background: white;
 }
 
 .close-btn {
@@ -212,7 +199,39 @@
     </form>
   </div>
 </div>
+<div id="editDeviceModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeEditModal()">&times;</span>
+        <h2>Заявка #<span id="num_z"></span></h2>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="edit_dev_mode" value="1">
+            <input type="hidden" id="edit_id" name="edit_id">
+            <div class="form-group">
+                <label for="edit_description">Описание:</label>
+                <textarea id="edit_description"
+                  name="edit_description"
+                  rows="3"
+                  required
+                  class="form-input"></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="cancel-btn" onclick="closeEditModal()">Отмена</button>
+                <button type="submit" class="submit-btn">Сохранить</button>
+            </div>
+        </form>
+    </div>
+</div>
 {% if applications %}
+    <div id="deviceCardModal" class="modal">
+    <div class="modal-content">
+
+        <div id="deviceCardContent">
+            <!-- Данные устройства будут вставляться через JavaScript -->
+        </div>
+    </div>
+    </div>
     <table class="device-table">
         <tr>
             <th>ID</th>
@@ -221,7 +240,7 @@
             <th>Статус</th>
         </tr>
         {% for record in applications %}
-        <tr>
+        <tr onclick="openDeviceCard('{{ record.id }}', '{{ record.device }}','{{ record.device.inv_num }}','{{ record.device.inv_num }}','{{ record.created_at|date:"d-m-Y" }}','{{ record.description }}')">
             <td>{{ record.id }}</td>
             <td>{{ record.device }} (#{{ record.device.inv_num }})</td>
             <td>{{ record.created_at|date:"d-m-Y" }}</td>
@@ -245,5 +264,49 @@
             closeModal();
         }
     };
+    function openDeviceCard(id,device, inv_num, type, date_assigned,description) {
+    const modal = document.getElementById("deviceCardModal");
+    const content = document.getElementById("deviceCardContent");
+    content.innerHTML = `
+        <div class="device-card">
+            <button class="close-btn" style="position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #333;" onclick="closeDeviceCard()">×</button>
+            <h3>Заявка #${id}</h3>
+            <p><strong>Устройство:</strong> ${device}  (#${inv_num})</p>
+            <p><strong>Дата создания:</strong> ${date_assigned}</p>
+            <p ><strong>Описание:</strong> ${description}</p>
+            <button onclick="closeDeviceCard();openEditModal('${id}','${device}','${date_assigned}','${description}')" style="background: #007bff; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; transition: background-color 0.3s ease;">
+            Редактировать
+            </button>
+  <button  class="cancel-btn">Удалить</button>
+        </div>
+    `;
+    modal.style.display = "block";
+}
+    function closeDeviceCard() {
+    document.getElementById("deviceCardModal").style.display = "none";
+}
+    window.onclick = function(event) {
+    const modal = document.getElementById("deviceCardModal");
+    if (event.target === modal) {
+        closeDeviceCard();
+    }
+};
+    function openEditModal(id,device,date_assigned,description) {
+    document.getElementById("num_z").textContent = id;
+    document.getElementById('edit_id').value = id;
+    document.getElementById('edit_description').value = description;
+    document.getElementById('editDeviceModal').style.display = 'block';
+}
+    function closeEditModal() {
+    document.getElementById('editDeviceModal').style.display = 'none';
+}
 </script>
 {% endblock %}

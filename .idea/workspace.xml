@@ -4,23 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="67dd3e18-b640-4c5d-9df1-d444f1007f3d" name="Changes" comment="!?">
-      <change afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/employee_devices.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/login.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/my_applications.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/my_devices.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/service.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/registration/login.html" afterDir="false" />
+    <list default="true" id="67dd3e18-b640-4c5d-9df1-d444f1007f3d" name="Changes" comment="!??">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounting_devices/accounting_devices/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/accounting_devices/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounting_devices/accounting_devices/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/accounting_devices/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/static/css/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/static/css/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/applications.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/applications.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/employees.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/employees.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/my_applications.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/my_applications.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/my_devices.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/my_devices.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -138,7 +126,15 @@
       <option name="project" value="LOCAL" />
       <updated>1741609439037</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="!??">
+      <option name="closed" value="true" />
+      <created>1742386511784</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1742386511784</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -168,7 +164,8 @@
     <MESSAGE value="3" />
     <MESSAGE value="employee" />
     <MESSAGE value="!?" />
-    <option name="LAST_COMMIT_MESSAGE" value="!?" />
+    <MESSAGE value="!??" />
+    <option name="LAST_COMMIT_MESSAGE" value="!??" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
