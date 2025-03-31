@@ -18,4 +18,6 @@ urlpatterns = [
     path("employees/<int:employee_id>/devices/", views.employee_devices, name="employee_devices"),
     path("my-devices/", views.my_devices, name="my_devices"),
     path("my-applications/", views.my_applications, name="my_applications"),
+    path("performers", views.performers, name="performers"),
+    path("operation-log", views.operation_log, name="operation-log"),
 ]

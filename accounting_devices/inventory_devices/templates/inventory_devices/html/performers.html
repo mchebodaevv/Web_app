@@ -1,8 +1,9 @@
 {% extends "inventory_devices/html/base.html" %}
-
+{% load static %}
+{% block title %}Устройства{% endblock %}
 {% block content %}
 <style>
-  .device-table {
+.device-table {
   margin: 5% auto;
   width: 80%;
   border-collapse: collapse;
@@ -123,15 +124,28 @@
   border-radius: 4px;
   cursor: pointer;
 }
-.device-card{
-    word-wrap: break-word; /* Перенос длинных слов */
-    overflow-wrap: break-word; /* Альтернативный способ переноса */
-    white-space: normal;
-}
-.device-card p {
-    text-align: left;
-    padding: 0px;
+.hidden {
+    display: none;
+.device-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
     background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: left;
+}
+
+.device-card h3 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.device-card p {
+    margin: 5px 0;
 }
 
 .close-btn {
@@ -149,73 +163,77 @@
 .close-btn:hover {
     color: red;
 }
+
 </style>
-<h1 style="color: #333; font-size: 36px; text-align: center;">Мои заявки</h1>
+<h1 style="color: #333; font-size: 36px; text-align: center;">Исполнители обслуживания</h1>
+
 <button
   type="button"
   style="margin: 0 10%; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;"
-  onclick="openModal()">
-  Создать заявку
+  id="openModal">
+  Добавить исполнителя
 </button>
-<div id="modal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal()">&times;</span>
-
-    <h2 style="margin-bottom: 20px;">Создание заявки</h2>
-
-    <form method="POST" class="departments-form">
-      {% csrf_token %}
-        {% if user.is_authenticated %}
-          <input type="hidden" name="emp_id" value="{{ user.employee.id }}">
-        {% endif %}
-       <div class="form-group">
-
-            <label for="dev">Устройство (инв. номер):</label>
-            <select id="dev"
-                    name="dev"
-                    required
-                    class="form-input">
-                <option value="">-- Выберите устройство --</option>
-                {% for record in devices %}
-                    <option value="{{ record.device.id }}">{{ record.device.dev_manufact }} {{ record.device.dev_model }} (#{{ record.device.inv_num }})</option>
-                {% endfor %}
-            </select>
-       </div>
-       <div class="form-group">
-        <label for="app_desc">Описание:</label>
-        <textarea id="app_desc"
-                  name="app_desc"
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 style="margin-bottom: 20px;">Добавить исполнителя</h2>
+        <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="p_name">Имя:</label>
+            <input type="text"
+                   id="p_name"
+                   name="p_name"
+                   required
+                   class="form-input">
+        </div>
+        <div class="form-group">
+            <label for="p_phone">Телефон:</label>
+            <input type="tel"
+                   id="p_phone"
+                   name="p_phone"
+                   required
+                   class="form-input">
+        </div>
+        <div class="form-group">
+        <label for="p_address">Адрес:</label>
+        <textarea id="p_address"
+                  name="p_address"
                   rows="3"
                   required
                   class="form-input"></textarea>
-       </div>
-       <div class="form-actions">
+      </div>
+        <div class="form-actions">
             <button type="button"
                     class="cancel-btn"
                     onclick="closeModal()">Отмена</button>
             <button type="submit"
                     class="submit-btn">Сохранить</button>
-       </div>
-    </form>
-  </div>
+        </div>
+        </form>
+    </div>
+
 </div>
 <div id="editDeviceModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeEditModal()">&times;</span>
-        <h2>Заявка #<span id="num_z"></span></h2>
+        <h2>Редактировать устройство</h2>
         <form method="POST">
             {% csrf_token %}
             <input type="hidden" name="edit_mode" value="1">
             <input type="hidden" id="edit_id" name="edit_id">
             <div class="form-group">
-                <label for="edit_description">Описание:</label>
-                <textarea id="edit_description"
-                  name="edit_description"
-                  rows="3"
-                  required
-                  class="form-input"></textarea>
+              <label for="edit_name">Название компании:</label>
+              <input type="text" id="edit_name" name="edit_name" required class="form-input">
             </div>
-
+            <div class="form-group">
+              <label for="edit_phone">Телефон:</label>
+              <input type="tel" id="edit_phone" name="edit_phone" required class="form-input">
+            </div>
+            <div class="form-group">
+              <label for="edit_address">Адрес:</label>
+              <textarea id="edit_address" name="edit_address" rows="3" required class="form-input"></textarea>
+            </div>
             <div class="form-actions">
                 <button type="button" class="cancel-btn" onclick="closeEditModal()">Отмена</button>
                 <button type="submit" class="submit-btn">Сохранить</button>
@@ -223,48 +241,56 @@
         </form>
     </div>
 </div>
-{% if applications %}
-    <div id="deviceCardModal" class="modal">
+<div id="deviceCardModal" class="modal">
     <div class="modal-content">
-
+        <span class="close" onclick="closeDeviceCard()">&times;</span>
+        <h2>Информация об устройстве</h2>
         <div id="deviceCardContent">
             <!-- Данные устройства будут вставляться через JavaScript -->
         </div>
     </div>
-    </div>
-    <table class="device-table">
-        <tr>
-            <th>ID</th>
-            <th>Устройство (инв. номер)</th>
-            <th>Дата создания</th>
-            <th>Статус</th>
-        </tr>
-        {% for record in applications %}
-        <tr onclick="openDeviceCard('{{ record.id }}', '{{ record.device }}','{{ record.device.inv_num }}','{{ record.device.inv_num }}','{{ record.created_at|date:"d-m-Y" }}','{{ record.description }}')">
-            <td>{{ record.id }}</td>
-            <td>{{ record.device }} (#{{ record.device.inv_num }})</td>
-            <td>{{ record.created_at|date:"d-m-Y" }}</td>
-            <td>{{ record.status }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-{% else %}
-    <p>У вас пока нет назначенных устройств.</p>
-{% endif %}
+</div>
+<table class="device-table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Имя</th>
+      <th>Телефон</th>
+      <th>Адрес</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for performer in performers %}
+    <tr onclick="openDeviceCard({{ performer.id }}, '{{ performer.name }}', '{{ performer.phone }}', '{{ performer.address }}')">
+        <td>{{ performer.id }}</td>
+        <td>{{ performer.name }}</td>
+        <td>{{ performer.phone }}</td>
+        <td>{{ performer.address }}</td>
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
 <script>
-  function openModal() {
-        document.getElementById("modal").style.display = "block";
+const modal = document.getElementById("myModal");
+const btn = document.getElementById("openModal");
+const span = document.getElementsByClassName("close")[0];
+
+btn.onclick = function() {
+    modal.style.display = "block";
+}
+
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
     }
-    function closeModal() {
-        document.getElementById("modal").style.display = "none";
-    }
-    window.onclick = function(event) {
-        const modal = document.getElementById("modal");
-        if (event.target === modal) {
-            closeModal();
-        }
-    };
-    function openDeviceCard(id,device, inv_num, type, date_assigned,description) {
+}
+
+function openDeviceCard(id, name, phone, address) {
+
     const modal = document.getElementById("deviceCardModal");
     const content = document.getElementById("deviceCardContent");
     content.innerHTML = `
@@ -278,35 +304,47 @@
     font-weight: bold;
     cursor: pointer;
     color: #333;" onclick="closeDeviceCard()">×</button>
-            <h3>Заявка #${id}</h3>
-            <p><strong>Устройство:</strong> ${device}  (#${inv_num})</p>
-            <p><strong>Дата создания:</strong> ${date_assigned}</p>
-            <p ><strong>Описание:</strong> ${description}</p>
-            <button onclick="closeDeviceCard();openEditModal('${id}','${device}','${date_assigned}','${description}')" style="background: #007bff; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; transition: background-color 0.3s ease;">
+            <h3>Исполнитель #${id}</h3>
+            <p><strong>Имя:</strong> ${name}</p>
+            <p><strong>Телефон:</strong> ${phone}</p>
+            <p><strong>Адрес:</strong> ${address}</p>
+            <button onclick="closeDeviceCard();openEditModal(${id},'${name}','${phone}','${address}')" style="background: #007bff; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; transition: background-color 0.3s ease;">
             Редактировать
             </button>
-  <button  onclick="deleteDevice(${id})" class="cancel-btn">Удалить</button>
+  <button onclick="deleteDevice(${id})" class="cancel-btn">Удалить</button>
         </div>
     `;
+
     modal.style.display = "block";
 }
-    function closeDeviceCard() {
+
+function closeDeviceCard() {
     document.getElementById("deviceCardModal").style.display = "none";
 }
-    window.onclick = function(event) {
+
+// Закрытие по клику вне карточки
+window.onclick = function(event) {
     const modal = document.getElementById("deviceCardModal");
     if (event.target === modal) {
         closeDeviceCard();
     }
 };
-    function openEditModal(id,device,date_assigned,description) {
-    document.getElementById("num_z").textContent = id;
+function openEditModal(id, name, phone, address) {
     document.getElementById('edit_id').value = id;
-    document.getElementById('edit_description').value = description;
+    document.getElementById('edit_name').value = name;
+    document.getElementById('edit_phone').value = phone;
+    document.getElementById('edit_address').value = address;
     document.getElementById('editDeviceModal').style.display = 'block';
 }
-    function closeEditModal() {
+
+function closeEditModal() {
     document.getElementById('editDeviceModal').style.display = 'none';
+}
+function convertDateFormat(dateStr) {
+  // Предполагается, что dateStr в формате "DD-MM-YYYY"
+  const parts = dateStr.split('-'); // [DD, MM, YYYY]
+  if (parts.length !== 3) return dateStr; // если формат не тот, возвращаем без изменений
+  return `${parts[2]}-${parts[1]}-${parts[0]}`; // Возвращаем "YYYY-MM-DD"
 }
 function deleteDevice(dev_id) {
     console.log(dev_id)

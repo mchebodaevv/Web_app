@@ -167,13 +167,6 @@
 
 </style>
 <h1 style="color: #333; font-size: 36px; text-align: center;">Заявки</h1>
-<button
-  type="button"
-  style="margin: 0 10%; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;"
-  id="openModal"
-  onclick="openModal()">
-  Создать заявку
-</button>
 <div id="modal" class="modal">
   <div class="modal-content">
     <span class="close" onclick="closeModal()">&times;</span>
@@ -222,6 +215,14 @@
     </form>
   </div>
 </div>
+<div id="deviceCardModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeDeviceCard()">&times;</span>
+        <div id="deviceCardContent">
+            <!-- Данные устройства будут вставляться через JavaScript -->
+        </div>
+    </div>
+</div>
 <table class="device-table">
   <thead>
     <tr>
@@ -234,7 +235,7 @@
   </thead>
   <tbody>
     {% for application in applications %}
-    <tr>
+    <tr onclick="openDeviceCard({{ application.id }}, '{{ application.device }}','{{ application.device.inv_num }}','{{ application.employee }}','{{ application.created_at|date:"d-m-Y" }}','{{ application.status }}','{{ application.description }}')">
       <td>{{ application.id }}</td>
       <td>{{ application.device }}  (#{{ application.device.inv_num }})</td>
       <td>{{ application.employee }}</td>
@@ -257,5 +258,43 @@
             closeModal();
         }
     };
+  function openDeviceCard(id, device, inv_num, employee,created_at , status,descript) {
+    console.log(descript)
+    const modal = document.getElementById("deviceCardModal");
+    const content = document.getElementById("deviceCardContent");
+    content.innerHTML = `
+        <div class="device-card">
+            <button class="close-btn" style="position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #333;" onclick="closeDeviceCard()">×</button>
+            <h3>Заявка #${id}</h3>
+            <p><strong>Устройство:</strong> ${device} (#${inv_num})</p>
+            <p><strong>Сотрудник:</strong> ${employee}</p>
+            <p><strong>Дата:</strong> ${created_at}</p>
+            <p><strong>Статус:</strong> ${status}</p>
+            <p ><strong>Описание:</strong> ${descript}</p>
+            <button onclick="deleteDevice(${id})" class="cancel-btn">Удалить</button>
+        </div>
+    `;
+
+    modal.style.display = "block";
+}
+function closeDeviceCard() {
+    document.getElementById("deviceCardModal").style.display = "none";
+}
+
+// Закрытие по клику вне карточки
+window.onclick = function(event) {
+    const modal = document.getElementById("deviceCardModal");
+    if (event.target === modal) {
+        closeDeviceCard();
+    }
+};
 </script>
 {% endblock %}

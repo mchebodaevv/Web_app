@@ -468,6 +468,30 @@ function toggleReturnDateField(condition) {
         returnDateField.value = ''; // Сбрасываем значение
     }
 }
+function deleteDevice(dev_id) {
+    console.log(dev_id)
+     if (confirm('Удалить этого поставщика?')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '';
+
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = 'csrfmiddlewaretoken';
+        csrfInput.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        const idInput = document.createElement('input');
+        idInput.type = 'hidden';
+        idInput.name = 'delete_id';
+        idInput.value = dev_id;
+
+        form.appendChild(csrfInput);
+        form.appendChild(idInput);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+    }
 </script>
 {% if error_message %}
     <script>

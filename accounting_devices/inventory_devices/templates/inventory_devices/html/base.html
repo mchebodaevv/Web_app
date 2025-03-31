@@ -47,8 +47,9 @@
                     <a href="{% url 'devices' %}">Устройства</a>
                     <a href="{% url 'employees' %}">Сотрудники</a>
                     <a href="{% url 'devices_responsible' %}">Выдача и возврат устройств</a>
+                    <a href="{% url 'applications' %}">Заявки</a>
                     <a href="{% url 'service' %}">Обслуживание</a>
-                    <a href="#">Журнал операций</a>
+                    <a href="{% url 'operation-log' %}">Журнал операций</a>
                     <a href="#">Отчеты</a>
                 {% elif request.user.groups.all.0.name == "Пользователь" %}
                     <a href="{% url 'my_devices' %}">Мои устройства</a>

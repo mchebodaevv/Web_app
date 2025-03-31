@@ -1,4 +1,3 @@
-
 from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User, Group
@@ -63,7 +62,6 @@ class Employee(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)  # Связь с User
     def __str__(self):
         return self.name
-
 @receiver(pre_save, sender=Employee)
 def check_login_change(sender, instance, **kwargs):
     if instance.pk:
@@ -73,8 +71,6 @@ def check_login_change(sender, instance, **kwargs):
                 User.objects.get(username=old_instance.login).delete()
             except User.DoesNotExist:
                 pass
-
-# После сохранения создаем или обновляем пользователя
 @receiver(post_save, sender=Employee)
 def create_or_update_user(sender, instance, created, **kwargs):
     if instance.login:
@@ -139,3 +135,34 @@ class Applications(models.Model):
 
     def __str__(self):
         return f"Заявка {self.id} – {self.device.dev_model}"
+class Performer(models.Model):
+    name = models.CharField(max_length=100, verbose_name="Имя")
+    phone = models.CharField(max_length=25, verbose_name="Телефон ")
+    address = models.TextField(verbose_name="Адрес ")
+
+    def __str__(self):
+        return f"{self.name}"
+class Service(models.Model):
+    application = models.ForeignKey(Applications, on_delete=models.CASCADE, verbose_name="Заявка")
+    performer = models.ForeignKey(Performer, on_delete=models.CASCADE, verbose_name="Исполнитель")
+    description = models.TextField()
+    dev_buydate = models.DateField(verbose_name="Дата обслуживания")
+    def __str__(self):
+        return f"Обслуживание №{self.id}"
+class DeviceOperationLog(models.Model):
+    OPERATION_CHOICES = (
+        ('Создание', 'Создание устройства'),
+        ('Редактирование', 'Изменение устройства'),
+        ('Удаление', 'Удаление устройства'),
+        ('Передача', 'Передача устройства'),
+        ('Возврат', 'Возврат устройства'),
+    )
+
+    device = models.ForeignKey(Devices, on_delete=models.CASCADE, related_name='operation_logs')
+    operation_type = models.CharField(max_length=40, choices=OPERATION_CHOICES)
+    description = models.TextField(null=True, blank=True)
+    employee = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.operation_type} - {self.device} - {self.timestamp}"

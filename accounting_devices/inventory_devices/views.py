@@ -3,7 +3,7 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from django.contrib import messages
 from django.db import IntegrityError
-from .models import Supplier, Devices, Department, Employee, Responsible, Applications
+from .models import Supplier, Devices, Department, Employee, Responsible, Applications,Performer,Service, DeviceOperationLog
 from django.utils import timezone
 from datetime import datetime
 from django.contrib.auth import authenticate, login
@@ -94,21 +94,35 @@ def devices(request):
     if request.method == 'POST' and 'delete_id' in request.POST:
         device_id = request.POST.get('delete_id')
         try:
-            print(device_id)
             device = Devices.objects.get(id=device_id)
+            DeviceOperationLog.objects.create(
+                device=device,
+                operation_type='delete',
+                description=f"Удалено устройство: {device.dev_manufact} {device.dev_model}",
+            )
             device.delete()
+
+            # Логирование операции удаления устройства
+
             success = True
         except Devices.DoesNotExist:
             pass
         return redirect('devices')
+
     if request.method == "POST" and "edit_dev_mode" in request.POST:
         device_id = request.POST.get("edit_dev_id")
         dev_supplier_id = request.POST.get("edit_dev_supplier")
-
         try:
             device = Devices.objects.get(id=device_id)
             supplier = Supplier.objects.get(id=dev_supplier_id)
 
+            # Получаем старые значения устройства для описания изменений
+            old_manufact = device.dev_manufact
+            old_model = device.dev_model
+            old_inv_num = device.inv_num
+            old_status = device.dev_status
+
+            # Обновляем данные устройства
             device.dev_manufact = request.POST.get("edit_dev_manufact")
             device.dev_model = request.POST.get("edit_dev_model")
             device.dev_type = request.POST.get("dev_type")
@@ -119,6 +133,16 @@ def devices(request):
             device.dev_status = request.POST.get("edit_dev_status")
 
             device.save()
+
+            # Запись в журнал операций
+            DeviceOperationLog.objects.create(
+                device=device,
+                operation_type='Редактирование',
+                description=(
+                    f"Изменены данные устройства: {old_manufact} {old_model} (#{old_inv_num}) -> "
+                    f"{device.dev_manufact} {device.dev_model} (#{device.inv_num})"
+                ),
+            )
         except Devices.DoesNotExist:
             pass
         return redirect('devices')
@@ -133,7 +157,7 @@ def devices(request):
         inv_num = request.POST.get('inv_num')
         supplier = Supplier.objects.get(id=dev_supplier)
         if dev_manufact  and dev_model and dev_type and inv_num and dev_number and dev_buydate and supplier and dev_status:
-            Devices.objects.create(
+            device = Devices.objects.create(
             dev_manufact=dev_manufact,
             dev_model=dev_model,
             dev_type=dev_type,
@@ -143,6 +167,11 @@ def devices(request):
             dev_supplier=supplier,
             dev_status=dev_status,
         )
+            DeviceOperationLog.objects.create(
+                device=device,
+                operation_type='Создание',
+                description=f"Добавлено устройство: {dev_manufact} {dev_model} (#{inv_num})",
+            )
         return redirect('devices')
 
 
@@ -191,6 +220,7 @@ def departments(request):
 def employees(request):
     employees = Employee.objects.all()
     departments = Department.objects.all()
+
     if request.method == 'POST' and 'delete_id' in request.POST:
         employee_id = request.POST.get('delete_id')
         try:
@@ -418,11 +448,6 @@ def applications(request):
         return redirect('applications')
     return render(request,"inventory_devices/html/applications.html",{'applications':applications,'devices':devices,'employees':employees})
 @login_required
-def service(request):
-    return render(request,"inventory_devices/html/service.html")
-
-
-@login_required
 def my_devices(request):
     try:
         employee = Employee.objects.get(user=request.user)  # Находим сотрудника, привязанного к пользователю
@@ -434,10 +459,8 @@ def my_devices(request):
     return render(request, "inventory_devices/html/my_devices.html", {
         "devices": devices
     })
-
 @login_required
 def my_applications(request):
-
     try:
         employee = Employee.objects.get(user=request.user)  # Находим сотрудника, привязанного к пользователю
         devices = Responsible.objects.filter(employee=employee,
@@ -445,7 +468,27 @@ def my_applications(request):
         applications = Applications.objects.filter(employee=employee)
     except Employee.DoesNotExist:
         devices = None
-    if request.method == 'POST':
+    if request.method == 'POST' and 'delete_id' in request.POST:
+        device_id = request.POST.get('delete_id')
+        try:
+            print(device_id)
+            device = Applications.objects.get(id=device_id)
+            device.delete()
+            success = True
+        except Devices.DoesNotExist:
+            pass
+        return redirect('devices')
+    if request.method == 'POST' and 'edit_mode' in request.POST:
+        emp_id = request.POST.get('edit_id')
+        descript = request.POST.get('edit_description')
+        try:
+            my_app = Applications.objects.get(id=emp_id)
+            my_app.description =  descript
+            my_app.save()
+        except Employee.DoesNotExist:
+            pass
+        return redirect('my_applications')
+    elif request.method == 'POST':
 
         emp_id = request.POST.get('emp_id')
         dev = request.POST.get('dev')
@@ -464,3 +507,129 @@ def my_applications(request):
         "applications": applications,
 
     })
+def performers(request):
+    performers = Performer.objects.all()
+    if request.method == 'POST' and 'delete_id' in request.POST:
+        supplier_id = request.POST.get('delete_id')
+        try:
+            supplier = Performer.objects.get(id=supplier_id)
+            supplier.delete()
+        except Supplier.DoesNotExist:
+            pass
+        return redirect('performers')
+    if request.method == "POST" and "edit_mode" in request.POST:
+        performer_id = request.POST.get("edit_id")
+        try:
+            performer = Performer.objects.get(id=performer_id)
+            performer.name = request.POST.get("edit_name")
+            performer.phone = request.POST.get("edit_phone")
+            performer.address = request.POST.get("edit_address")
+            performer.save()
+        except Employee.DoesNotExist:
+            pass
+        return redirect('performers')
+    if request.method == 'POST':
+        p_name = request.POST.get('p_name')
+        p_phone = request.POST.get('p_phone')
+        p_address = request.POST.get('p_address')
+        if p_name  and p_phone and p_address :
+            Performer.objects.create(
+            name=p_name,
+            phone=p_phone,
+            address=p_address,
+        )
+    return render(request, "inventory_devices/html/performers.html", {
+        "performers": performers,
+    })
+@login_required
+def service(request):
+    services = Service.objects.all()
+    performers = Performer.objects.all()
+    applications = Applications.objects.filter(status='Новая')
+    error_message = None
+
+    if request.method == 'POST':
+        # Удаление услуги
+        if 'delete_id' in request.POST:
+            service_id = request.POST.get('delete_id')
+            try:
+                service = Service.objects.get(id=service_id)
+                service.delete()
+            except Service.DoesNotExist:  # Исправлено с Supplier на Service
+                error_message = "Услуга не найдена."
+            return redirect('service')
+
+        # Редактирование услуги
+        if "edit_mode" in request.POST:
+            service_id = request.POST.get("edit_id")
+            try:
+                service = Service.objects.get(id=service_id)
+                performer_id = request.POST.get("edit_performer")
+                application_id = request.POST.get("edit_ap_id")
+                description = request.POST.get("edit_description")
+                date_str = request.POST.get("edit_date")  # Получаем дату в виде строки
+                print(date_str)
+                service.performer = Performer.objects.get(id=performer_id)
+                service.description = description
+
+                if date_str:  # Проверяем, что дата была передана
+                    date_service = datetime.strptime(date_str, '%Y-%m-%d').date()
+                    application = Applications.objects.get(id=application_id)
+
+                    if date_service < application.created_at.date():
+                        error_message = "Дата обслуживания не может быть раньше даты заявки."
+                    else:
+                        service.dev_buydate = date_service  # Обновляем дату
+                        service.save()  # Сохраняем изменения
+
+            except Service.DoesNotExist:
+                error_message = "Услуга не найдена."
+            except Performer.DoesNotExist:
+                error_message = "Исполнитель не найден."
+            except Applications.DoesNotExist:
+                error_message = "Заявка не найдена."
+            except ValueError:
+                error_message = "Некорректный формат даты."
+
+
+        # Добавление новой услуги
+        else:
+            application_id = request.POST.get('applications')
+            performer_id = request.POST.get('performer')
+            date_ser = request.POST.get('edit_date')  # Исправлен параметр
+            descript = request.POST.get('desc')
+
+            try:
+                application = Applications.objects.get(id=application_id)
+                performer = Performer.objects.get(id=performer_id)
+
+                if date_ser:
+                    date_service = datetime.strptime(date_ser, '%Y-%m-%d').date()
+                    if date_service < application.created_at.date():
+                        error_message = "Дата обслуживания не может быть раньше даты заявки."
+                    else:
+                        Service.objects.create(
+                            application=application,
+                            performer=performer,
+                            description=descript,
+                            date=date_service  # Исправленное поле
+                        )
+                        application.status = 'Закрыта'
+                        application.save()
+            except Applications.DoesNotExist:
+                error_message = "Заявка не найдена."
+            except Performer.DoesNotExist:
+                error_message = "Исполнитель не найден."
+            except ValueError:
+                error_message = "Некорректный формат даты."
+
+    return render(request, "inventory_devices/html/service.html", {
+        'services': services,
+        'applications': applications,
+        'performers': performers,
+        'error_message': error_message  # Теперь error_message передаётся в шаблон
+    })
+@login_required
+def operation_log(request):
+    operation_log = DeviceOperationLog.objects.all()
+    return render(request, "inventory_devices/html/operation_log.html",{'operation_log':operation_log})
