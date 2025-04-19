@@ -5,19 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="67dd3e18-b640-4c5d-9df1-d444f1007f3d" name="Changes" comment="!??!">
-      <change afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/operation_log.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/performers.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/device_history.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounting_devices/accounting_devices/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/accounting_devices/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounting_devices/accounting_devices/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/accounting_devices/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/static/js/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/static/js/script.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/applications.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/applications.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/devices_responsible.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/devices_responsible.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/my_applications.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/my_applications.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/devices.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/devices.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/operation_log.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/operation_log.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/service.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/service.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/registration/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/registration/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/suppliers.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/templates/inventory_devices/html/suppliers.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounting_devices/inventory_devices/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounting_devices/inventory_devices/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -152,7 +150,23 @@
       <option name="project" value="LOCAL" />
       <updated>1742562241906</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="!??!">
+      <option name="closed" value="true" />
+      <created>1743422449430</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1743422449430</updated>
+    </task>
+    <task id="LOCAL-00010" summary="!??!">
+      <option name="closed" value="true" />
+      <created>1743422459938</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1743422459938</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -200,33 +214,43 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/accounting_devices/inventory_devices/models.py</url>
-          <line>110</line>
+          <line>111</line>
           <option name="timeStamp" value="8" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/accounting_devices/inventory_devices/views.py</url>
-          <line>88</line>
+          <line>99</line>
           <option name="timeStamp" value="13" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/accounting_devices/inventory_devices/views.py</url>
-          <line>239</line>
+          <line>264</line>
           <option name="timeStamp" value="14" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/accounting_devices/inventory_devices/views.py</url>
-          <line>421</line>
+          <line>459</line>
           <option name="timeStamp" value="16" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/accounting_devices/inventory_devices/views.py</url>
-          <line>433</line>
+          <line>471</line>
           <option name="timeStamp" value="18" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/accounting_devices/inventory_devices/views.py</url>
-          <line>480</line>
+          <line>518</line>
           <option name="timeStamp" value="19" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/accounting_devices/inventory_devices/views.py</url>
+          <line>674</line>
+          <option name="timeStamp" value="20" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/accounting_devices/inventory_devices/views.py</url>
+          <line>33</line>
+          <option name="timeStamp" value="21" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

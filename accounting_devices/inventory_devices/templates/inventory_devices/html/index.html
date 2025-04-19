@@ -1,7 +1,58 @@
 {% extends "inventory_devices/html/base.html" %}
-<head>
-    {% block title %}Главная страница{% endblock %}
-</head>
+
+{% block title %}Главная страница{% endblock %}
+
 {% block content %}
-<h1>Поставщики</h1>
+<h1 style="color: #333; font-size: 36px; text-align: center;">Система учета устройств</h1>
+
+<div style="width: 600px; margin: 50px auto;">
+  <!-- Диаграмма -->
+  <canvas id="deviceChart"></canvas>
+  <div style="margin-top: 30px; font-size: 16px; color: #444; text-align: center;">
+    <p>📊 <strong>Всего устройств: {{ total_count }}</strong></p>
+  </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const ctx = document.getElementById('deviceChart').getContext('2d');
+  const deviceChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['На складе', 'В эксплуатации', 'Списаны'],
+      datasets: [{
+        label: 'Устройства',
+        data: [
+          {{ storage_count }},
+          {{ in_use_count }},
+          {{ written_off_count }}
+        ],
+        backgroundColor: ['#3498db', '#2ecc71', '#e74c3c'],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            font: {
+              size: 14
+            }
+          }
+        },
+        title: {
+          display: true,
+          text: 'Состояние устройств',
+          font: {
+            size: 18
+          }
+        }
+      }
+    }
+  });
+</script>
 {% endblock %}

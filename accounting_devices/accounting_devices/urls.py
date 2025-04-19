@@ -20,4 +20,5 @@ urlpatterns = [
     path("my-applications/", views.my_applications, name="my_applications"),
     path("performers", views.performers, name="performers"),
     path("operation-log", views.operation_log, name="operation-log"),
+    path('device-history/<int:device_id>/', views.device_history, name='device_history'),
 ]

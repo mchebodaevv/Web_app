@@ -1,5 +1,5 @@
 from django.db.models import F, Q
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse
 from django.contrib import messages
 from django.db import IntegrityError
@@ -37,7 +37,18 @@ def is_user(user):
     return user.groups.filter(name="Пользователь").exists()
 @login_required
 def index(request):
-    return render(request,"inventory_devices/html/index.html")
+    total_count = Devices.objects.count()
+    storage_count = Devices.objects.filter(dev_status="На складе").count()
+    in_use_count = Devices.objects.filter(dev_status="В эксплуатации").count()
+    written_off_count = Devices.objects.filter(dev_status="Списано").count()
+    context = {
+        'storage_count': storage_count,
+        'in_use_count': in_use_count,
+        'written_off_count': written_off_count,
+        'total_count': total_count
+    }
+
+    return render(request, "inventory_devices/html/index.html", context)
 @login_required
 def suppliers(request):
     success = False
@@ -95,11 +106,6 @@ def devices(request):
         device_id = request.POST.get('delete_id')
         try:
             device = Devices.objects.get(id=device_id)
-            DeviceOperationLog.objects.create(
-                device=device,
-                operation_type='delete',
-                description=f"Удалено устройство: {device.dev_manufact} {device.dev_model}",
-            )
             device.delete()
 
             # Логирование операции удаления устройства
@@ -108,7 +114,32 @@ def devices(request):
         except Devices.DoesNotExist:
             pass
         return redirect('devices')
+    if request.method == "POST" and "writeoff_mode" in request.POST:
+        device_id = request.POST.get("writeoff_id")
+        writeoff_date_str = request.POST.get("dev_writeoff")
+        try:
+            device = Devices.objects.get(id=device_id)
+            buy_date = device.dev_buydate
+            writeoff_date = datetime.strptime(writeoff_date_str, "%Y-%m-%d").date()
 
+            if writeoff_date < buy_date:
+                # Пример с messages
+                return render(request, 'inventory_devices/html/devices.html', {
+                    'devices': Devices.objects.all(),
+                    'error_message': "Дата списания не может быть раньше даты покупки."
+                })
+
+            device.dev_status = "Списано"
+            device.dev_writeoff = writeoff_date
+            device.save()
+            DeviceOperationLog.objects.create(
+                device=device,
+                operation_type='Списание',
+                description=f"Списано устройство: {device.dev_manufact} {device.dev_model} (#{device.inv_num})",
+            )
+        except Devices.DoesNotExist:
+            pass
+        return redirect('devices')
     if request.method == "POST" and "edit_dev_mode" in request.POST:
         device_id = request.POST.get("edit_dev_id")
         dev_supplier_id = request.POST.get("edit_dev_supplier")
@@ -153,7 +184,7 @@ def devices(request):
         dev_number = request.POST.get('dev_number')
         dev_buydate = request.POST.get('dev_buydate')
         dev_supplier = request.POST.get('dev_supplier')
-        dev_status = request.POST.get('dev_status')
+        dev_status = "На складе"
         inv_num = request.POST.get('inv_num')
         supplier = Supplier.objects.get(id=dev_supplier)
         if dev_manufact  and dev_model and dev_type and inv_num and dev_number and dev_buydate and supplier and dev_status:
@@ -344,11 +375,17 @@ def devices_responsible(request):
                     else:
                         responsible.date_returned = date_returned
                         responsible.status = "Возвращено"
-                        responsible.device = device
-                        responsible.save()
 
+                        DeviceOperationLog.objects.create(
+                            device=responsible.device,
+                            employee=responsible.employee,
+                            operation_type='Возврат',
+                            description=f"Устройство {device.dev_manufact} {device.dev_model} (#{device.inv_num}) возвращено сотрудником {responsible.employee}: ",
+                        )
+                        print(123)
                         device.dev_status = "На складе"
                         device.save()
+                        responsible.save()
 
                         messages.success(request, "Устройство успешно возвращено.")
                         return redirect('devices_responsible')
@@ -397,6 +434,12 @@ def devices_responsible(request):
                                 date_assigned=date_assigned,
                                 employee=employee,
                                 device=device,
+                            )
+                            DeviceOperationLog.objects.create(
+                                device=device,
+                                employee=employee,
+                                operation_type='Выдача',
+                                description=f"Устройство {device.dev_manufact} {device.dev_model} (#{device.inv_num}) выдано сотруднику {employee}: ",
                             )
                             device.dev_status = "В эксплуатации"
                             device.save()
@@ -547,7 +590,6 @@ def service(request):
     performers = Performer.objects.all()
     applications = Applications.objects.filter(status='Новая')
     error_message = None
-
     if request.method == 'POST':
         # Удаление услуги
         if 'delete_id' in request.POST:
@@ -633,3 +675,7 @@ def service(request):
 def operation_log(request):
     operation_log = DeviceOperationLog.objects.all()
     return render(request, "inventory_devices/html/operation_log.html",{'operation_log':operation_log})
+def device_history(request, device_id):
+    device = get_object_or_404(Devices, id=device_id)
+    history = DeviceOperationLog.objects.filter(device=device).order_by('-timestamp')
+    return render(request, 'inventory_devices/html/device_history.html', {'device': device, 'history': history})

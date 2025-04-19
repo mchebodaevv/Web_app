@@ -190,7 +190,12 @@
 }
 </style>
 <h1 style="color: #333; font-size: 36px; text-align: center;">Журнал операций</h1>
+<div id="deviceCardModal" class="modal">
 
+        <div id="deviceCardContent">
+            <!-- Данные устройства будут вставляться через JavaScript -->
+        </div>
+    </div>
 <table class="device-table">
   <thead>
     <tr>
@@ -203,7 +208,7 @@
   </thead>
   <tbody>
     {% for log in operation_log %}
-    <tr>
+    <tr onclick="openDeviceCard({{ log.id }},'{{ log.device }}','{{ log.device.inv_num }}','{{ log.operation_type }}','{{ log.employee|default:"-" }}','{{ log.timestamp|date:"d-m-Y H:i" }}','{{ log.description }}')">
       <td>{{ log.id }}</td>
       <td>{{ log.device }} (#{{ log.device.inv_num }})</td>
       <td>{{ log.operation_type }}</td>
@@ -213,4 +218,55 @@
    {% endfor %}
   </tbody>
 </table>
+<script>
+  function openModal() {
+        document.getElementById("modal").style.display = "block";
+    }
+    function closeModal() {
+        document.getElementById("modal").style.display = "none";
+    }
+    window.onclick = function(event) {
+        const modal = document.getElementById("modal");
+        if (event.target === modal) {
+            closeModal();
+        }
+    };
+    function openDeviceCard(id,device,inv_num,type,employee,date,description) {
+    console.log(id)
+    const modal = document.getElementById("deviceCardModal");
+    const content = document.getElementById("deviceCardContent");
+    content.innerHTML = `
+        <div class="device-card">
+            <button class="close-btn" style="position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #333;" onclick="closeDeviceCard()">×</button>
+            <h3><strong>Операция</strong> #${id}</h3>
+            <p><strong>Устройство:</strong> ${device} (#${inv_num})</p>
+            <p><strong>Тип операции:</strong> ${type}</p>
+            <p><strong>Сотрудник:</strong> ${employee}</p>
+            <p><strong>Дата и время:</strong> ${date}</p>
+            <p><strong>Описание:</strong> ${description}</p>
+
+
+        </div>
+
+    `;
+    modal.style.display = "block";
+}
+    function closeDeviceCard() {
+    document.getElementById("deviceCardModal").style.display = "none";
+}
+    window.onclick = function(event) {
+    const modal = document.getElementById("deviceCardModal");
+    if (event.target === modal) {
+        closeDeviceCard();
+    }
+};
+</script>
 {% endblock %}

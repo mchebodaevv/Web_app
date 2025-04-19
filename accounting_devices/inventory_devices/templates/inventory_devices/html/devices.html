@@ -2,6 +2,8 @@
 {% load static %}
 {% block title %}Устройства{% endblock %}
 {% block content %}
+<!-- Excel -->
+
 <style>
 .device-table {
   margin: 5% auto;
@@ -47,16 +49,7 @@
     background-color: rgba(0,0,0,0.4);
 }
 
-.modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            z-index: 1000;
-        }
+
 
         .modal-content {
             text-align:center;
@@ -126,26 +119,74 @@
 }
 .hidden {
     display: none;
-.device-card {
-    position: relative;
+}
+.device-card{
+    word-wrap: break-word; /* Перенос длинных слов */
+    overflow-wrap: break-word; /* Альтернативный способ переноса */
+    white-space: normal;
+    padding-right: 120px
+}
+.card-actions {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding: 20px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 300px;
-    text-align: left;
+}
+.btn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease-in-out;
 }
 
-.device-card h3 {
-    margin-bottom: 10px;
-    color: #333;
+.btn.edit {
+    background: #007bff;
+    color: white;
 }
 
+.btn.edit:hover {
+    background: #0056b3;
+}
+
+.btn.delete {
+    background: #dc3545;
+    color: white;
+}
+
+.btn.delete:hover {
+    background: #a71d2a;
+}
+
+.btn.history {
+    background: #6c757d;
+    color: white;
+}
+
+.btn.history:hover {
+    background: #545b62;
+}
+
+.btn.writeoff {
+    background: #ff9800;
+    color: white;
+}
+
+.btn.writeoff:hover {
+    background: #e68900;
+}
 .device-card p {
-    margin: 5px 0;
+    text-align: left;
+    padding: 0px;
+    background: white;
 }
 
 .close-btn {
@@ -163,21 +204,105 @@
 .close-btn:hover {
     color: red;
 }
+.edit-btn {
+    background: #007bff;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
 
+.edit-btn:hover {
+    background: #0056b3;
+}
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-button {
+  padding: 10px 20px;
+  background-color: #8000ff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: white;
+  min-width: 160px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  z-index: 1;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.dropdown-content a {
+  color: #333;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  font-size: 14px;
+}
+
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
 </style>
 <h1 style="color: #333; font-size: 36px; text-align: center;">Устройства</h1>
-<a
-  type="button"
-  style="margin: 0 80%; padding: 10px 20px; background-color: brown; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;"
-  onclick="openModal()" href="{% url 'suppliers' %}">
-  Поставщики
-</a>
-<button
-  type="button"
-  style="margin: 0 10%; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;"
-  id="openModal">
-  Добавить устройство
-</button>
+<div style="text-align: right; margin-bottom: 10px;">
+  <a
+    href="{% url 'suppliers' %}"
+    style="margin-right: 160px; padding: 10px 20px; background-color: brown; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; text-decoration: none;">
+    Поставщики
+  </a>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; margin: 0 10% 10px 10%;margin-top: 20px;">
+
+  <button
+    type="button"
+    onclick="openModal()"
+    style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">
+    Добавить устройство
+  </button>
+
+    <div class="dropdown">
+    <button class="dropdown-button">
+      <i class="fas fa-download" style="margin-right: 6px;"></i>Экспорт
+    </button>
+
+    <div class="dropdown-content">
+      <a href="#" onclick="exportToExcel()">
+        <i class="fas fa-file-excel" style="color: green; margin-right: 8px;"></i>В Excel
+      </a>
+      <a href="#" onclick="exportTableToPDF()">
+        <i class="fas fa-file-pdf" style="color: red; margin-right: 8px;"></i>В PDF
+      </a>
+    </div>
+  </div>
+</div>
+<div id="errorModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeErrorModal()">&times;</span>
+    <h2 style="margin-bottom: 20px;">Ошибка</h2>
+    <p id="errorMessage"></p>
+    <div class="form-actions">
+      <button type="button" class="cancel-btn" onclick="closeErrorModal()">Закрыть</button>
+    </div>
+  </div>
+</div>
 <div id="myModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
@@ -194,7 +319,7 @@
         </div>
         <div class="form-group">
             <label for="dev_model">Модель:</label>
-            <input type="tel"
+            <input type="text"
                    id="dev_model"
                    name="dev_model"
                    required
@@ -214,7 +339,7 @@
         </div>
         <div class="form-group">
             <label for="inv_num">Инвентарный номер:</label>
-            <input type="tel"
+            <input type="text"
                    id="inv_num"
                    name="inv_num"
                    required
@@ -222,7 +347,7 @@
         </div>
         <div class="form-group">
             <label for="dev_number">Серийный номер:</label>
-            <input type="tel"
+            <input type="text"
                    id="dev_number"
                    name="dev_number"
                    required
@@ -245,17 +370,6 @@
                 <option value="">-- Выберите поставщика --</option>
                 {% for supplier in suppliers %}
                     <option value="{{ supplier.id }}">{{ supplier.supp_name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="dev_status">Статус:</label>
-            <select id="dev_status"
-                    name="dev_status"
-                    required
-                    class="form-input">
-                {% for value, display in device_status %}
-                    <option value="{{ value }}">{{ display }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -299,7 +413,7 @@
             </select>
             </div>
             <div class="form-group">
-                <label for="edit_inv_num">Серийный номер:</label>
+                <label for="edit_inv_num">Инвентарный номер:</label>
                 <input type="text" id="edit_inv_num" name="edit_inv_num" required class="form-input">
             </div>
             <div class="form-group">
@@ -334,15 +448,63 @@
         </form>
     </div>
 </div>
-<div id="deviceCardModal" class="modal">
+<div id="writeOffDevice" class="modal">
     <div class="modal-content">
-        <span class="close" onclick="closeDeviceCard()">&times;</span>
-        <h2>Информация об устройстве</h2>
+        <span class="close" onclick="closeWriteOffModal()">&times;</span>
+        <h2>Списать устройство</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="writeoff_mode" value="1">
+            <input type="hidden" id="writeoff_id" name="writeoff_id">
+            <p><strong>Производитель:</strong> <span id="off_manufact"></span></p>
+            <p><strong>Модель:</strong> <span id="off_model"></span></p>
+            <p><strong>Инвентарный номер:</strong> <span id="off_inv_num"></span></p>
+            <h4 style="display: inline;">Дата списания: </h4>
+            <div class="form-group">
+                <input type="date"
+                       required
+                       id = "dev_writeoff"
+                       name="dev_writeoff"
+                       class="form-input"
+                       style="margin-top:10px;">
+            </div>
+            <div class="form-actions">
+                <button type="button" class="cancel-btn" onclick="closeWriteOffModal()">Отмена</button>
+                <button type="submit" class="submit-btn">Списать</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div id="deviceCardModal" class="modal">
         <div id="deviceCardContent">
             <!-- Данные устройства будут вставляться через JavaScript -->
         </div>
-    </div>
 </div>
+<div style="width: 80%; margin: 20px auto; display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+  <input type="text" id="searchInput" class="form-input" placeholder="Поиск...">
+
+  <select id="statusFilter" class="form-input">
+    <option value="">Все статусы</option>
+    {% for value, display in device_status %}
+      <option value="{{ display }}">{{ display }}</option>
+    {% endfor %}
+  </select>
+
+  <select id="typeFilter" class="form-input">
+    <option value="">Все типы</option>
+    {% for value, display in device_types %}
+      <option value="{{ display }}">{{ display }}</option>
+    {% endfor %}
+  </select>
+
+  <select id="supplierFilter" class="form-input">
+    <option value="">Все поставщики</option>
+    {% for supplier in suppliers %}
+      <option value="{{ supplier.supp_name }}">{{ supplier.supp_name }}</option>
+    {% endfor %}
+  </select>
+</div>
+
 <table class="device-table">
   <thead>
     <tr>
@@ -359,7 +521,7 @@
   </thead>
   <tbody>
     {% for device in devices %}
-    <tr onclick="openDeviceCard({{ device.id }}, '{{ device.dev_manufact }}', '{{ device.dev_model }}', '{{ device.dev_type }}','{{ device.inv_num }}', '{{ device.dev_number }}', '{{ device.dev_buydate|date:"d-m-Y" }}', '{{ device.dev_supplier }}', '{{ device.dev_status }}','{{ device.dev_supplier_id }}')">
+    <tr onclick="openDeviceCard({{ device.id }}, '{{ device.dev_manufact }}', '{{ device.dev_model }}', '{{ device.dev_type }}','{{ device.inv_num }}', '{{ device.dev_number }}', '{{ device.dev_buydate|date:"d-m-Y" }}', '{{ device.dev_supplier }}', '{{ device.dev_status }}','{{ device.dev_supplier_id }}','{{ device.dev_writeoff|date:"d-m-Y"  }}')">
         <td>{{ device.id }}</td>
         <td>{{ device.dev_manufact }}</td>
         <td>{{ device.dev_model }}</td>
@@ -371,13 +533,25 @@
         <td>{{ device.dev_status }}</td>
     </tr>
     {% endfor %}
-</tbody>
+  </tbody>
 </table>
 <script>
 const modal = document.getElementById("myModal");
 const btn = document.getElementById("openModal");
 const span = document.getElementsByClassName("close")[0];
+function openModal() {
+    document.getElementById("myModal").style.display = "block";
+}
 
+    function closeModal() {
+        document.getElementById("modal").style.display = "none";
+    }
+    window.onclick = function(event) {
+        const modal = document.getElementById("modal");
+        if (event.target === modal) {
+            closeModal();
+        }
+    };
 btn.onclick = function() {
     modal.style.display = "block";
 }
@@ -385,7 +559,13 @@ btn.onclick = function() {
 span.onclick = function() {
     modal.style.display = "none";
 }
-
+function openErrorModal(message) {
+        document.getElementById("errorMessage").innerText = message;
+        document.getElementById("errorModal").style.display = "block";
+    }
+    function closeErrorModal() {
+        document.getElementById("errorModal").style.display = "none";
+    }
 window.onclick = function(event) {
     if (event.target == modal) {
         modal.style.display = "none";
@@ -394,11 +574,25 @@ window.onclick = function(event) {
   const today = new Date();
     const formattedDate = today.toISOString().split('T')[0];
     document.getElementById('dev_buydate').value = formattedDate;
+    document.getElementById('dev_writeoff').value = formattedDate;
 
-function openDeviceCard(id, manufact, model, type,inv_num , serial, buyDate, supplier, status,supplier_id) {
-
+function openDeviceCard(id, manufact, model, type,inv_num , serial, buyDate, supplier, status,supplier_id,dev_writeoff) {
     const modal = document.getElementById("deviceCardModal");
     const content = document.getElementById("deviceCardContent");
+    let writeOffButton = "";
+    let writeOffDate = "";
+    if (status === "На складе") {
+        writeOffButton = `
+            <button class="btn writeoff" onclick="closeDeviceCard();writeOffDevice(${id},'${manufact}','${model}','${inv_num}')">
+                🗑️ Списать устройство
+            </button>
+        `;
+    }
+    if (status === "Списано") {
+        writeOffDate = `
+            <p><strong>Дата списания:</strong> ${dev_writeoff}</p>
+        `;
+    }
     content.innerHTML = `
         <div class="device-card">
             <button class="close-btn" style="position: absolute;
@@ -419,10 +613,20 @@ function openDeviceCard(id, manufact, model, type,inv_num , serial, buyDate, sup
             <p><strong>Дата покупки:</strong> ${buyDate}</p>
             <p><strong>Поставщик:</strong> ${supplier}</p>
             <p><strong>Статус:</strong> ${status}</p>
-            <button onclick="closeDeviceCard();openEditModal(${id}, '${manufact}', '${model}', '${type}','${inv_num}', '${serial}', convertDateFormat('${buyDate}'), '${supplier}', '${status}','${supplier_id}')" style="background: #007bff; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; transition: background-color 0.3s ease;">
-            Редактировать
-            </button>
-  <button onclick="deleteDevice(${id})" class="cancel-btn">Удалить</button>
+            ${writeOffDate}
+
+            <div class="card-actions">
+                <button class="btn edit" onclick="closeDeviceCard();openEditModal(${id}, '${manufact}', '${model}', '${type}','${inv_num}', '${serial}', convertDateFormat('${buyDate}'), '${supplier}', '${status}','${supplier_id}')">
+                    ✏️ Редактировать
+                </button>
+                <button class="btn delete" onclick="deleteDevice(${id})">
+                    ❌ Удалить
+                </button>
+                <button class="btn history" onclick="window.location.href='/device-history/${id}/'">
+                    📜 История устройства
+                </button>
+                ${writeOffButton}
+            </div>
         </div>
     `;
 
@@ -441,7 +645,6 @@ window.onclick = function(event) {
     }
 };
 function openEditModal(id, manufact, model, type,inv_num, serial, buyDate, supplier, status, supplier_id) {
-    console.log(supplier_id);
     document.getElementById('edit_dev_id').value = id;
     document.getElementById('edit_dev_manufact').value = manufact;
     document.getElementById('edit_dev_model').value = model;
@@ -451,13 +654,24 @@ function openEditModal(id, manufact, model, type,inv_num, serial, buyDate, suppl
     document.getElementById('edit_dev_buydate').value = buyDate;
     document.getElementById('edit_dev_supplier').value = supplier_id;
     document.getElementById('edit_dev_status').value = status;
-
     document.getElementById('editDeviceModal').style.display = 'block';
 }
 
 function closeEditModal() {
     document.getElementById('editDeviceModal').style.display = 'none';
 }
+function writeOffDevice(id, manufact, model, inv_num) {
+    document.getElementById('writeoff_id').value = id;
+    document.getElementById('off_manufact').textContent = manufact;
+    document.getElementById('off_model').textContent = model;
+    document.getElementById('off_inv_num').textContent = inv_num;
+    document.getElementById('writeOffDevice').style.display = 'block';
+}
+
+function closeWriteOffModal() {
+    document.getElementById('writeOffDevice').style.display = 'none';
+}
+
 function convertDateFormat(dateStr) {
   // Предполагается, что dateStr в формате "DD-MM-YYYY"
   const parts = dateStr.split('-'); // [DD, MM, YYYY]
@@ -488,5 +702,112 @@ function deleteDevice(dev_id) {
         form.submit();
     }
     }
+
 </script>
+<script>
+  const searchInput = document.getElementById("searchInput");
+  const statusFilter = document.getElementById("statusFilter");
+  const typeFilter = document.getElementById("typeFilter");
+  const supplierFilter = document.getElementById("supplierFilter");
+
+  function filterTable() {
+    const searchText = searchInput.value.toLowerCase();
+    const status = statusFilter.value;
+    const type = typeFilter.value;
+    const supplier = supplierFilter.value;
+
+    const rows = document.querySelectorAll(".device-table tbody tr");
+
+    rows.forEach(row => {
+      const cells = row.getElementsByTagName("td");
+      const rowText = row.innerText.toLowerCase();
+      const rowStatus = cells[8].innerText;
+      const rowType = cells[3].innerText;
+      const rowSupplier = cells[7].innerText;
+
+      const matchesSearch = rowText.includes(searchText);
+      const matchesStatus = !status || rowStatus === status;
+      const matchesType = !type || rowType === type;
+      const matchesSupplier = !supplier || rowSupplier === supplier;
+
+      if (matchesSearch && matchesStatus && matchesType && matchesSupplier) {
+        row.style.display = "";
+      } else {
+        row.style.display = "none";
+      }
+    });
+  }
+
+  searchInput.addEventListener("input", filterTable);
+  statusFilter.addEventListener("change", filterTable);
+  typeFilter.addEventListener("change", filterTable);
+  supplierFilter.addEventListener("change", filterTable);
+</script>
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+
+<script>
+    function exportToExcel() {
+    const table = document.querySelector('.device-table');
+    const rows = table.querySelectorAll('tbody tr');
+    const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.innerText);
+
+    const visibleData = [];
+    rows.forEach(row => {
+        if (row.offsetParent !== null) {  // проверка: отображается ли строка
+            const cells = Array.from(row.querySelectorAll('td')).map(td => td.innerText);
+            visibleData.push(cells);
+        }
+    });
+
+    const wb = XLSX.utils.book_new();
+    const ws_data = [headers, ...visibleData];
+    const ws = XLSX.utils.aoa_to_sheet(ws_data);
+    XLSX.utils.book_append_sheet(wb, ws, "Устройства");
+
+    XLSX.writeFile(wb, "devices_filtered.xlsx");
+}
+</script>
+<script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+<script>
+  function exportTableToPDF() {
+    const table = document.querySelector(".device-table");
+
+    // Клонируем таблицу, чтобы не менять оригинал
+    const clonedTable = table.cloneNode(true);
+    clonedTable.querySelectorAll(".hidden").forEach(el => el.classList.remove("hidden"));
+
+    // Создаём заголовок
+    const title = document.createElement("h2");
+    title.textContent = "Устройства";
+    title.style.textAlign = "center";
+    title.style.marginBottom = "20px";
+    title.style.fontFamily = "Arial, sans-serif";
+
+    // Обёртка для PDF
+    const container = document.createElement("div");
+    container.style.fontFamily = "Arial, sans-serif";
+    container.style.fontSize = "10px";
+    container.appendChild(title);
+    container.appendChild(clonedTable);
+
+    // Параметры PDF
+    const opt = {
+      margin: 10,
+      filename: 'devices.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+    };
+
+    // Генерация и сохранение
+    html2pdf().set(opt).from(container).save();
+  }
+</script>
+
+
+{% if error_message %}
+    <script>
+        openErrorModal("{{ error_message|escapejs }}");
+    </script>
+{% endif %}
 {% endblock %}

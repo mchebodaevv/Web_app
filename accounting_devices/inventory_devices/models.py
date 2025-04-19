@@ -34,6 +34,7 @@ class Devices(models.Model):
     dev_buydate = models.DateField(verbose_name="Дата покупки")
     dev_supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, verbose_name="Поставщик")
     dev_status = models.CharField(max_length=45, choices=STATUS_CHOICES, verbose_name="Статус")
+    dev_writeoff = models.DateField(verbose_name="Дата списания", null=True, blank=True)
     def __str__(self):
         return f"{self.dev_manufact} {self.dev_model}"
 class Department(models.Model):
