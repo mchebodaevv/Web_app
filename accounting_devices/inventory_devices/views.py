@@ -284,6 +284,8 @@ def employees(request):
         emp_phone = request.POST.get('emp_phone')
         emp_post = request.POST.get('emp_post')
         emp_department = request.POST.get('emp_department')
+        emp_login = request.POST.get('emp_login')
+        emp_password = request.POST.get('emp_password')
         department = Department.objects.get(id=emp_department)
         if emp_name  and emp_email and emp_phone and emp_post and department:
             Employee.objects.create(
@@ -292,6 +294,8 @@ def employees(request):
             phone=emp_phone,
             post=emp_post,
             department=department,
+            login = emp_login,
+            us_password = emp_password,
         )
         return redirect('employees')
 

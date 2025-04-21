@@ -26,18 +26,29 @@
 .device-table tr:nth-child(even) {
   background: #f8f9fa;
 }
+
+.device-table tr:hover {
+  background: #e9ecef;
+  cursor: pointer;
+}
+
+.status-active { color: #28a745; }
+.status-repair { color: #ffc107; }
+.status-archived { color: #dc3545; }
 .modal {
-            display: none; /* Скрыто по умолчанию */
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgb(0,0,0);
-            background-color: rgba(0,0,0,0.4);
-        }
+    display: none; /* Скрыто по умолчанию */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+}
+
+
 
         .modal-content {
             text-align:center;
@@ -57,48 +68,7 @@
             cursor: pointer;
             font-size: 24px;
         }
-
-        /* Остальные стили */
-        .device-table {
-            margin: 5% auto;
-            width: 80%;
-            border-collapse: collapse;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .device-table th {
-            background: #2c3e50;
-            color: white;
-            padding: 15px;
-            text-align: left;
-        }
-
-        .device-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .device-table tr:nth-child(even) {
-            background: #f8f9fa;
-        }
-
-        .device-table tr:hover {
-            background: #e9ecef;
-            cursor: pointer;
-        }
-
-        .status-active { color: #28a745; }
-        .status-repair { color: #ffc107; } /* Исправлена опечатка */
-        .status-archived { color: #dc3545; }
-
-        @media (max-width: 168px) {
-            .device-table {
-                display: block;
-                overflow-x: auto;
-            }
-            /* Можете добавить мобильные стили для модалки здесь */
-        }
-  .supplier-form {
+.supplier-form {
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -148,20 +118,202 @@
 }
 .hidden {
     display: none;
+}
+.device-card{
+    word-wrap: break-word; /* Перенос длинных слов */
+    overflow-wrap: break-word; /* Альтернативный способ переноса */
+    white-space: normal;
+    padding-right: 120px
+}
+.card-actions {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.btn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease-in-out;
+}
+
+.btn.edit {
+    background: #007bff;
+    color: white;
+}
+
+.btn.edit:hover {
+    background: #0056b3;
+}
+
+.btn.delete {
+    background: #dc3545;
+    color: white;
+}
+
+.btn.delete:hover {
+    background: #a71d2a;
+}
+
+.btn.history {
+    background: #6c757d;
+    color: white;
+}
+
+.btn.history:hover {
+    background: #545b62;
+}
+
+.btn.writeoff {
+    background: #ff9800;
+    color: white;
+}
+
+.btn.writeoff:hover {
+    background: #e68900;
+}
+.device-card p {
+    text-align: left;
+    padding: 0px;
+    background: white;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #333;
+}
+
+.close-btn:hover {
+    color: red;
+}
+.edit-btn {
+    background: #007bff;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.edit-btn:hover {
+    background: #0056b3;
+}
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-button {
+  padding: 10px 20px;
+  background-color: #8000ff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: white;
+  min-width: 160px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  z-index: 1;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.dropdown-content a {
+  color: #333;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  font-size: 14px;
+}
+
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.checkbox-group label {
+  font-size: 14px;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.form-checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: #4CAF50; /* Цвет чекбокса в стиле твоей submit кнопки */
+  cursor: pointer;
+}
+
 </style>
 <h1 style="text-align:center;">Сотрудники</h1>
-<a
-  type="button"
-  style="margin: 0 80%; padding: 10px 20px; background-color: brown; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;"
-  href="{% url 'departments' %}">
-  Отделы
-</a>
-<button
-  type="button"
-  style="margin: 0 10%; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;"
-  onclick="openModal()">
-  Добавить сотрудника
-</button>
+<div style="text-align: right; margin-bottom: 10px;">
+  <a
+    href="{% url 'suppliers' %}"
+    style="margin-right: 180px; padding: 10px 20px; background-color: brown; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; text-decoration: none;">
+    Отделы
+  </a>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; margin: 0 10% 10px 10%;margin-top: 20px;">
+
+  <button
+    type="button"
+    onclick="openModal()"
+    style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">
+    Добавить сотрудника
+  </button>
+
+    <div class="dropdown">
+    <button class="dropdown-button">
+      <i class="fas fa-download" style="margin-right: 6px;"></i>Экспорт
+    </button>
+
+    <div class="dropdown-content">
+      <a href="#" onclick="exportToExcel()">
+        <i class="fas fa-file-excel" style="color: green; margin-right: 8px;"></i>В Excel
+      </a>
+      <a href="#" onclick="exportTableToPDF()">
+        <i class="fas fa-file-pdf" style="color: red; margin-right: 8px;"></i>В PDF
+      </a>
+    </div>
+  </div>
+</div>
 <div id="modal" class="modal">
   <div class="modal-content">
     <span class="close" onclick="closeModal()">&times;</span>
@@ -212,6 +364,22 @@
                 {% endfor %}
             </select>
       </div>
+      <div class="form-group">
+        <label for="emp_login">Логин:</label>
+        <input type="text"
+               id="emp_login"
+               name="emp_login"
+               required
+               class="form-input">
+      </div>
+      <div class="form-group">
+        <label for="emp_login">Пароль:</label>
+        <input type="text"
+               id="emp_password"
+               name="emp_password"
+               required
+               class="form-input">
+      </div>
       <div class="form-actions">
         <button type="button"
                 class="cancel-btn"
@@ -258,11 +426,38 @@
                 {% endfor %}
             </select>
             </div>
+            <div class="form-group">
+                <label for="edit_emp_login">Логин:</label>
+                <input type="text" id="edit_emp_login" name="edit_emp_login" required class="form-input">
+            </div>
             <div class="form-actions">
                 <button type="button" class="cancel-btn" onclick="closeEditModal()">Отмена</button>
                 <button type="submit" class="submit-btn">Сохранить</button>
             </div>
         </form>
+    </div>
+</div>
+<div id="editPasswordModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeEditModal()">&times;</span>
+        <h2>Смена пароля</h2>
+        <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="dev_manufact">Новый пароль:</label>
+            <input type="text"
+                   id="dev_manufact"
+                   name="dev_manufact"
+                   required
+                   class="form-input">
+        </div>
+        <div class="form-actions">
+            <button type="button"
+                    class="cancel-btn"
+                    onclick="closeModal()">Отмена</button>
+            <button type="submit"
+                    class="submit-btn">Сменить</button>
+        </div>
     </div>
 </div>
 <div id="deviceCardModal" class="modal">
@@ -273,6 +468,22 @@
             <!-- Данные устройства будут вставляться через JavaScript -->
         </div>
     </div>
+</div>
+<div style="width: 80%; margin: 20px auto; display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+  <input type="text" id="searchInput" class="form-input" placeholder="Поиск...">
+  <select id="statusFilter" class="form-input">
+    <option value="">Все должности</option>
+    {% for value, display in device_status %}
+      <option value="{{ display }}">{{ display }}</option>
+    {% endfor %}
+  </select>
+
+  <select id="typeFilter" class="form-input">
+    <option value="">Все отделы</option>
+    {% for value, display in device_types %}
+      <option value="{{ display }}">{{ display }}</option>
+    {% endfor %}
+  </select>
 </div>
 <table class="device-table">
   <thead>
@@ -287,7 +498,7 @@
   </thead>
   <tbody>
     {% for employee in employees %}
-    <tr onclick="openDeviceCard({{ employee.id }}, '{{ employee.name  }}', '{{ employee.email }}', '{{ employee.phone }}','{{ employee.post }}','{{ employee.department }}',{{ employee.department_id }})">
+    <tr onclick="openDeviceCard({{ employee.id }}, '{{ employee.name  }}', '{{ employee.email }}', '{{ employee.phone }}','{{ employee.post }}','{{ employee.department }}',{{ employee.department_id }},'{{ employee.login }}')">
       <td>{{ employee.id }}</td>
       <td>{{ employee.name }}</td>
       <td>{{ employee.email }}</td>
@@ -311,7 +522,7 @@
             closeModal();
         }
     };
-function openDeviceCard(id, name, email, phone, post, department,department_id) {
+function openDeviceCard(id, name, email, phone, post, department,department_id, login) {
     const modal = document.getElementById("deviceCardModal");
     const content = document.getElementById("deviceCardContent");
     content.innerHTML = `
@@ -331,11 +542,19 @@ function openDeviceCard(id, name, email, phone, post, department,department_id) 
             <p><strong>Номер телефона:</strong> ${phone}</p>
             <p><strong>Должность:</strong> ${post}</p>
             <p><strong>Отдел:</strong> ${department}</p>
-            <button onclick="closeDeviceCard(); openEditModal(${id}, '${name}', '${email}', '${phone}', '${post}', '${department}','${department_id}')" style="background: #007bff; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; transition: background-color 0.3s ease;">
-    Редактировать
-</button>
-        <button onclick="deleteDevice(${id})" class="cancel-btn">Удалить</button>
+            <p><strong>Логин:</strong> ${login}</p>
+            <div class="card-actions">
+                <button class="btn edit" onclick="closeDeviceCard(); openEditModal(${id}, '${name}', '${email}', '${phone}', '${post}', '${department}','${department_id}')" style="background: #007bff; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; transition: background-color 0.3s ease;">
+                   ✏️ Редактировать
+                </button>
+                <button onclick="deleteDevice(${id})" class="cancel-btn">❌ Удалить</button>
+                <button onclick="closeDeviceCard();openEditPassword(${id})" class="btn history">🔑 Сменить пароль</button>
+            </div>
+
+
         </div>
+        </div>
+
     `;
     modal.style.display = "block";
 }
@@ -348,6 +567,9 @@ window.onclick = function(event) {
         closeDeviceCard();
     }
 };
+function openEditPassword(id){
+    document.getElementById('editPasswordModal').style.display = 'block';
+}
 function openEditModal(id, name,email,phone,post, department ,department_id) {
     console.log(department_id);
     document.getElementById('edit_emp_id').value = id;

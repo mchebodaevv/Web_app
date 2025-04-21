@@ -154,6 +154,7 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  }
 .device-card {
     position: relative;
     display: flex;
@@ -187,15 +188,95 @@
     cursor: pointer;
     color: #333;
 }
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-button {
+  padding: 10px 20px;
+  background-color: #8000ff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: white;
+  min-width: 160px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  z-index: 1;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.dropdown-content a {
+  color: #333;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  font-size: 14px;
+}
+
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.checkbox-group label {
+  font-size: 14px;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.form-checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: #4CAF50; /* Цвет чекбокса в стиле твоей submit кнопки */
+  cursor: pointer;
 }
 </style>
 <h1 style="color: #333; font-size: 36px; text-align: center;">Отделы</h1>
-<button
-  type="button"
-  style="margin: 0 10%; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;"
-  onclick="openModal()">
-  Добавить отдел
-</button>
+<div style="display: flex; justify-content: space-between; align-items: center; margin: 0 10% 20px 10%;">
+  <button
+    type="button"
+    onclick="openModal()"
+    style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">
+    Добавить отдел
+  </button>
+
+    <div class="dropdown">
+    <button class="dropdown-button">
+      <i class="fas fa-download" style="margin-right: 6px;"></i>Экспорт
+    </button>
+    <div class="dropdown-content">
+      <a href="#" onclick="exportToExcel()">
+        <i class="fas fa-file-excel" style="color: green; margin-right: 8px;"></i>В Excel
+      </a>
+      <a href="#" onclick="exportToPDF()">
+        <i class="fas fa-file-pdf" style="color: red; margin-right: 8px;"></i>В PDF
+      </a>
+    </div>
+  </div>
+</div>
+
 <div id="modal" class="modal">
   <div class="modal-content">
     <span class="close" onclick="closeModal()">&times;</span>
@@ -267,6 +348,11 @@
 </div>
 <div id="deviceCardModal" class="modal">
     <div class="modal-content" id="deviceCardContent"></div>
+</div>
+<div style="width: 80%; margin: 20px auto;">
+  <input type="text" id="search-input"
+         placeholder="Поиск по отделу, телефону или адресу..."
+         style="width: 70%; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px;">
 </div>
 <table class="device-table">
   <thead>
